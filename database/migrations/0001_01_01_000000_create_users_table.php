@@ -14,11 +14,23 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->nullable()->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // Campos del sistema RILAZ
+            $table->enum('rol', ['ADMIN', 'TECNICO', 'INVITADO'])->default('TECNICO');
+            $table->foreignId('cliente_id')->nullable(); // Se omite constrained() aquí por orden de creación
+            $table->boolean('activo')->default(true);
+
+            // Auditoría (Apuntando a 'users')
+            $table->timestamp('creado_en')->useCurrent();
+            $table->foreignId('creado_por')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('actualizado_en')->useCurrent()->useCurrentOnUpdate();
+            $table->foreignId('actualizado_por')->nullable()->constrained('users')->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
