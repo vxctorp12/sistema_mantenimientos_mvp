@@ -25,3 +25,9 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+admin-management-modules.php
+contratos-vue-module.php
+dashboard-vue-inertia.php
+laravel-models-and-migrations.php
+laravel-vue-inertia-modules.php
+tecnico-module-and-rbac-v2.php
