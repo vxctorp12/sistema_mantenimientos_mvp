@@ -51,7 +51,7 @@ const submit = () => {
                     <TextInput
                         id="email"
                         type="email"
-                        class="w-full pl-10 pr-4 py-2.5"
+                        class="w-full pl-10 pr-4 py-2.5 !bg-slate-900/90 !border-slate-700/80 !text-white placeholder:!text-slate-400 focus:!border-blue-500 focus:!ring-blue-500"
                         v-model="form.email"
                         required
                         autofocus
@@ -84,7 +84,7 @@ const submit = () => {
                     <TextInput
                         id="password"
                         :type="showPassword ? 'text' : 'password'"
-                        class="w-full pl-10 pr-10 py-2.5"
+                        class="w-full pl-10 pr-10 py-2.5 !bg-slate-900/90 !border-slate-700/80 !text-white placeholder:!text-slate-400 focus:!border-blue-500 focus:!ring-blue-500"
                         v-model="form.password"
                         required
                         autocomplete="current-password"

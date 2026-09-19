@@ -23,6 +23,8 @@ class Mantenimiento extends Model
         'fecha_mantenimiento',
         'observaciones',
         'recomendaciones',
+        'contador_bn',
+        'contador_color',
         'estado_firma',
         'impreso',
         'fecha_impresion',
@@ -63,6 +65,11 @@ class Mantenimiento extends Model
     }
 
     public function checklists(): HasMany
+    {
+        return $this->hasMany(MantenimientoChecklist::class, 'mantenimiento_id');
+    }
+
+    public function detalles(): HasMany
     {
         return $this->hasMany(MantenimientoChecklist::class, 'mantenimiento_id');
     }

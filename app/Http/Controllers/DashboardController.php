@@ -29,6 +29,10 @@ class DashboardController extends Controller
             });
         }
 
+        if ($user && $user->rol === 'INVITADO') {
+            $query->where('cliente_id', $user->cliente_id);
+        }
+
         $contratosRaw = $query->get();
 
         $contratosActivos = $contratosRaw->map(function ($c) {
@@ -199,6 +203,96 @@ class DashboardController extends Controller
                 'productividad_tecnicos' => $productividadTecnicos,
                 'ultimos_mantenimientos' => $ultimosMantenimientos
             ]
+        ]);
+    }
+
+    public function contratoDashboard(Request $request, Contrato $contrato)
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'TECNICO') {
+            if (!$contrato->tecnicos()->where('users.id', $user->id)->exists()) {
+                abort(403, 'No tienes acceso a este contrato.');
+            }
+        }
+
+        if ($user->rol === 'INVITADO') {
+            if ($contrato->cliente_id !== $user->cliente_id) {
+                abort(403, 'No tienes acceso a este contrato.');
+            }
+        }
+
+        $contrato->load('cliente');
+
+        // 1. Mantenimientos diarios
+        $mantenimientosDiarios = DB::table('mantenimientos')
+            ->where('contrato_id', $contrato->id)
+            ->whereNotNull('fecha_mantenimiento')
+            ->select(DB::raw('DATE(fecha_mantenimiento) as fecha'), DB::raw('count(*) as total'))
+            ->groupBy('fecha')
+            ->orderBy('fecha', 'asc')
+            ->get();
+
+        // 2. Mantenimientos por Técnico
+        $mantenimientosPorTecnico = DB::table('mantenimientos')
+            ->join('users', 'mantenimientos.tecnico_id', '=', 'users.id')
+            ->where('mantenimientos.contrato_id', $contrato->id)
+            ->select('users.name as tecnico', DB::raw('count(*) as total'))
+            ->groupBy('users.id', 'users.name')
+            ->get();
+
+        // 3. Mantenimientos por Tipo de Equipo
+        $mantenimientosPorTipo = DB::table('mantenimientos')
+            ->join('equipos', 'mantenimientos.equipo_id', '=', 'equipos.id')
+            ->where('mantenimientos.contrato_id', $contrato->id)
+            ->select(DB::raw('COALESCE(equipos.tipo_equipo, "OTRO") as tipo'), DB::raw('count(*) as total'))
+            ->groupBy('tipo')
+            ->get();
+
+        // 4. Mantenimientos por Marca
+        $mantenimientosPorMarca = DB::table('mantenimientos')
+            ->join('equipos', 'mantenimientos.equipo_id', '=', 'equipos.id')
+            ->where('mantenimientos.contrato_id', $contrato->id)
+            ->select(DB::raw('COALESCE(equipos.marca, "DESCONOCIDA") as marca'), DB::raw('count(*) as total'))
+            ->groupBy('marca')
+            ->orderByDesc('total')
+            ->get();
+
+        // 5. Historial paginado (lista)
+        $queryMantenimientos = Mantenimiento::with(['equipo', 'tecnico'])
+            ->where('contrato_id', $contrato->id)
+            ->orderByDesc('fecha_mantenimiento');
+
+        if ($user->rol === 'TECNICO') {
+            $queryMantenimientos->where('tecnico_id', $user->id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $queryMantenimientos->whereHas('equipo', function($q) use ($search) {
+                $q->where('numero_serie', 'like', "%{$search}%")
+                  ->orWhere('codigo_inventario', 'like', "%{$search}%");
+            });
+        }
+
+        $mantenimientosPaginados = $queryMantenimientos->paginate(15)->withQueryString();
+
+        $contratoInfo = [
+            'id' => $contrato->id,
+            'cliente_nombre' => $contrato->cliente->nombre_cliente ?? $contrato->cliente->nombre_empresa ?? 'Cliente',
+            'ubicacion' => $contrato->ubicacion_general,
+            'fecha_inicio' => $contrato->fecha_inicio ? $contrato->fecha_inicio->format('d/m/Y') : 'N/A',
+            'fecha_limite' => $contrato->fecha_limite ? $contrato->fecha_limite->format('d/m/Y') : 'Sin fecha límite',
+        ];
+
+        return Inertia::render('Contratos/Dashboard', [
+            'contrato' => $contratoInfo,
+            'mantenimientosDiarios' => $mantenimientosDiarios,
+            'mantenimientosPorTecnico' => $mantenimientosPorTecnico,
+            'mantenimientosPorTipo' => $mantenimientosPorTipo,
+            'mantenimientosPorMarca' => $mantenimientosPorMarca,
+            'mantenimientos' => $mantenimientosPaginados,
+            'filters' => $request->only(['search'])
         ]);
     }
 }

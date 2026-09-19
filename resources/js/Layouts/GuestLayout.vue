@@ -13,7 +13,7 @@ import { Link } from '@inertiajs/vue3';
         <!-- Encabezado de Marca y Logo -->
         <div class="mb-6 text-center flex flex-col items-center z-10">
             <Link href="/" class="inline-flex items-center justify-center p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 shadow-2xl backdrop-blur-xl hover:border-blue-500/50 hover:scale-105 transition-all duration-300 group">
-                <ApplicationLogo class="h-14 w-auto object-contain" />
+                <ApplicationLogo variant="dark" class="h-14 w-auto object-contain" />
             </Link>
             <h1 class="mt-4 text-2xl font-black tracking-tight text-white">
                 RILAZ Mantenimientos

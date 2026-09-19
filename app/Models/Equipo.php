@@ -23,6 +23,8 @@ class Equipo extends Model
         'modelo',
         'departamento_unidad',
         'usuario_asignado',
+        'direccion_ip',
+        'sistema_operativo',
         'sede_id',
         'creado_por',
         'actualizado_por',

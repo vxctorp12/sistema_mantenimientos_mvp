@@ -341,9 +341,9 @@ const exportarExcel = () => {
                     </button>
 
                     <!-- Bento 6: Avance Global del Contrato Activo -->
-                    <div class="md:col-span-2 bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+                    <Link :href="route('contratos.dashboard', contratoActivo.id)" class="md:col-span-2 bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between hover:shadow-md hover:border-blue-500 transition cursor-pointer group">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold uppercase text-gray-400 dark:text-gray-400">Progreso del Contrato</span>
+                            <span class="text-xs font-bold uppercase text-gray-400 dark:text-gray-400 group-hover:text-blue-500 transition">Progreso del Contrato ➔</span>
                             <span class="text-lg font-black text-blue-600 dark:text-blue-400">{{ metricas.porcentaje_avance_global || metricas.porcentaje_avance }}%</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -353,7 +353,7 @@ const exportarExcel = () => {
                             <span>{{ metricas.total_realizados || metricas.total_mantenimientos }} mantenimientos completados</span>
                             <span>Meta: {{ metricas.meta_mantenimientos_total || metricas.meta_mantenimientos }}</span>
                         </div>
-                    </div>
+                    </Link>
 
                 </div>
             </div>
@@ -363,11 +363,13 @@ const exportarExcel = () => {
             <!-- ==================================================================== -->
             <div v-else class="space-y-6">
                 <div v-if="metricas" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Avance del Contrato</h3>
+                    <Link :href="route('contratos.dashboard', contratoActivo?.id)" class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-blue-500 transition cursor-pointer group block">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-blue-500 transition">Avance del Contrato ➔</h3>
+                        </div>
                         <div class="text-3xl font-extrabold text-gray-900 dark:text-white mt-2">{{ metricas.porcentaje_avance_global || metricas.porcentaje_avance }}%</div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{ metricas.total_realizados }} de {{ metricas.meta_mantenimientos_total }} mantenimientos ejecutados</p>
-                    </div>
+                    </Link>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Equipos Atendidos</h3>

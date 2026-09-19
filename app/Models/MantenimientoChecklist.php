@@ -16,8 +16,11 @@ class MantenimientoChecklist extends Model
 
     protected $fillable = [
         'mantenimiento_id',
+        'categoria_seccion',
         'item_verificacion',
         'realizado',
+        'estado',
+        'comentario',
         'comentarios',
     ];
 
