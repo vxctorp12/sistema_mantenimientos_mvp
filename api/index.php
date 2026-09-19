@@ -28,6 +28,15 @@ $serverlessEnv = [
     'QUEUE_CONNECTION' => 'sync'
 ];
 
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
+
+if (isset($_SERVER['HTTP_HOST'])) {
+    $serverlessEnv['APP_URL'] = 'https://' . $_SERVER['HTTP_HOST'];
+    $_SERVER['HTTPS'] = 'on';
+}
+
 foreach ($serverlessEnv as $key => $value) {
     putenv("$key=$value");
     $_ENV[$key] = $value;
