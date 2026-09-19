@@ -12,6 +12,7 @@ putenv('VIEW_COMPILED_PATH=/tmp');
 putenv('CACHE_STORE=array');
 putenv('SESSION_DRIVER=cookie');
 putenv('LOG_CHANNEL=stderr');
+putenv('QUEUE_CONNECTION=sync');
 
 define('LARAVEL_START', microtime(true));
 require __DIR__.'/../vendor/autoload.php';
