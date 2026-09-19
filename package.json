@@ -3,7 +3,6 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "vercel-build": "composer install --no-interaction --prefer-dist --optimize-autoloader && vite build",
         "build": "vite build",
         "dev": "vite"
     },
