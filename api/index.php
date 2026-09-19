@@ -13,5 +13,26 @@ putenv('CACHE_STORE=array');
 putenv('SESSION_DRIVER=cookie');
 putenv('LOG_CHANNEL=stderr');
 
-// Cargar el punto de entrada principal de Laravel
-require __DIR__ . '/../public/index.php';
+define('LARAVEL_START', microtime(true));
+require __DIR__.'/../vendor/autoload.php';
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+// Cambiar la ruta de almacenamiento al directorio temporal de Vercel
+$app->useStoragePath('/tmp');
+
+// Vercel /tmp está vacío, Laravel necesita estas carpetas para no lanzar error 500
+$storageDirs = [
+    '/tmp/app',
+    '/tmp/framework/views',
+    '/tmp/framework/cache/data',
+    '/tmp/framework/sessions',
+    '/tmp/logs'
+];
+foreach ($storageDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+}
+
+$app->handleRequest(Illuminate\Http\Request::capture());
