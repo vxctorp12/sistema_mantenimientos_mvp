@@ -28,6 +28,15 @@ $serverlessEnv = [
     'QUEUE_CONNECTION' => 'sync'
 ];
 
+// Configurar certificados SSL nativos para conexiones a TiDB Serverless
+$certLocations = openssl_get_cert_locations();
+if (!empty($certLocations['default_cert_file']) && file_exists($certLocations['default_cert_file'])) {
+    $serverlessEnv['MYSQL_ATTR_SSL_CA'] = $certLocations['default_cert_file'];
+} else {
+    // Fallback para Amazon Linux (Vercel Node/PHP runtimes)
+    $serverlessEnv['MYSQL_ATTR_SSL_CA'] = '/etc/pki/tls/certs/ca-bundle.crt';
+}
+
 if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
     $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
 }
