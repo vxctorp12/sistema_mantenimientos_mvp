@@ -19,6 +19,7 @@ const listaContratos = ref(props.contratos && props.contratos.length > 0 ? props
 
 const form = useForm({
   contrato_id: props.contrato_id_default || props.contratoActivo?.id || (listaContratos.value[0]?.id ?? ''),
+  fecha_mantenimiento: new Date().toISOString().slice(0, 10),
   codigo_inventario: props.inventarioInicial || '',
   numero_serie: props.serieInicial || '',
   tipo_equipo: 'DESKTOP',
@@ -236,8 +237,19 @@ const submitForm = (andPrint = false) => {
               </select>
             </div>
 
-            <!-- Identificador Principal: Código de Inventario / Activo Fijo -->
+            <!-- Fecha de Mantenimiento -->
             <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Fecha de Mantenimiento *</label>
+              <input 
+                v-model="form.fecha_mantenimiento" 
+                type="date" 
+                required
+                class="w-full text-sm border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-blue-500" 
+              />
+            </div>
+
+            <!-- Identificador Principal: Código de Inventario / Activo Fijo -->
+            <div class="md:col-span-2">
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Código de Inventario / Activo Fijo *</label>
               <div class="flex gap-2">
                 <input 
