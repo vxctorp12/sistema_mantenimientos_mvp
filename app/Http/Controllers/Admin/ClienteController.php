@@ -12,7 +12,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::withCount(['sedes', 'contratos']);
+        $query = Cliente::with('sedes')->withCount(['sedes', 'contratos']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -69,5 +69,26 @@ class ClienteController extends Controller
         $cliente->sedes()->create($validated);
 
         return redirect()->back()->with('success', 'Sede agregada exitosamente.');
+    }
+
+    public function updateSede(Request $request, Sede $sede)
+    {
+        $validated = $request->validate([
+            'nombre_sede' => 'required|string|max:100',
+            'direccion'   => 'nullable|string|max:255',
+            'telefono'    => 'nullable|string|max:30',
+            'latitud'     => 'nullable|numeric',
+            'longitud'    => 'nullable|numeric',
+        ]);
+
+        $sede->update($validated);
+
+        return redirect()->back()->with('success', 'Sede actualizada exitosamente.');
+    }
+
+    public function destroySede(Sede $sede)
+    {
+        $sede->delete();
+        return redirect()->back()->with('success', 'Sede eliminada exitosamente.');
     }
 }

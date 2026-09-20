@@ -12,8 +12,11 @@ const props = defineProps({
 const search = ref(props.filters?.search || '');
 const showClienteModal = ref(false);
 const showSedeModal = ref(false);
+const showSedesListModal = ref(false);
 const isEditingCliente = ref(false);
+const isEditingSede = ref(false);
 const editingClienteId = ref(null);
+const editingSedeId = ref(null);
 const selectedClienteForSede = ref(null);
 
 const clienteForm = useForm({
@@ -73,17 +76,52 @@ const guardarCliente = () => {
 };
 
 const abrirAgregarSede = (cliente) => {
+    isEditingSede.value = false;
+    editingSedeId.value = null;
     selectedClienteForSede.value = cliente;
     sedeForm.reset();
     sedeForm.clearErrors();
     showSedeModal.value = true;
 };
 
+const abrirEditarSede = (sede, cliente) => {
+    isEditingSede.value = true;
+    editingSedeId.value = sede.id;
+    selectedClienteForSede.value = cliente;
+    sedeForm.clearErrors();
+    sedeForm.nombre_sede = sede.nombre_sede;
+    sedeForm.direccion = sede.direccion || '';
+    sedeForm.telefono = sede.telefono || '';
+    sedeForm.latitud = sede.latitud || '';
+    sedeForm.longitud = sede.longitud || '';
+    showSedesListModal.value = false;
+    showSedeModal.value = true;
+};
+
+const abrirSedesList = (cliente) => {
+    selectedClienteForSede.value = cliente;
+    showSedesListModal.value = true;
+};
+
+const eliminarSede = (sede) => {
+    if (confirm(`¿Estás seguro de que deseas eliminar la sede "${sede.nombre_sede}"?`)) {
+        router.delete(route('admin.clientes.sedes.destroy', sede.id), {
+            onSuccess: () => { showSedesListModal.value = false; }
+        });
+    }
+};
+
 const guardarSede = () => {
-    if (!selectedClienteForSede.value) return;
-    sedeForm.post(route('admin.clientes.sedes.store', selectedClienteForSede.value.id), {
-        onSuccess: () => { showSedeModal.value = false; sedeForm.reset(); }
-    });
+    if (isEditingSede.value) {
+        sedeForm.put(route('admin.clientes.sedes.update', editingSedeId.value), {
+            onSuccess: () => { showSedeModal.value = false; sedeForm.reset(); }
+        });
+    } else {
+        if (!selectedClienteForSede.value) return;
+        sedeForm.post(route('admin.clientes.sedes.store', selectedClienteForSede.value.id), {
+            onSuccess: () => { showSedeModal.value = false; sedeForm.reset(); }
+        });
+    }
 };
 </script>
 
@@ -140,9 +178,10 @@ const guardarSede = () => {
                                 <div class="text-xs text-gray-400 dark:text-gray-500">{{ c.contacto_email }} | {{ c.telefono }}</div>
                             </td>
                             <td class="p-4 text-center">
-                                <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+                                <button @click="abrirSedesList(c)" class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/60 transition cursor-pointer flex items-center justify-center gap-1 mx-auto">
                                     {{ c.sedes_count ?? 0 }} sedes
-                                </span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                </button>
                             </td>
                             <td class="p-4 text-center">
                                 <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
@@ -214,9 +253,9 @@ const guardarSede = () => {
             <div v-if="showSedeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                        Nueva Sede para {{ selectedClienteForSede?.nombre_cliente }}
+                        {{ isEditingSede ? 'Editar Sede' : 'Nueva Sede para ' + selectedClienteForSede?.nombre_cliente }}
                     </h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Ingresa los datos de la sucursal u oficina</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">{{ isEditingSede ? 'Modifica los datos de la sucursal' : 'Ingresa los datos de la sucursal u oficina' }}</p>
 
                     <form @submit.prevent="guardarSede" class="space-y-4">
                         <div>
@@ -250,10 +289,56 @@ const guardarSede = () => {
                                 Cancelar
                             </button>
                             <button type="submit" :disabled="sedeForm.processing" class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition">
-                                Guardar Sede
+                                {{ isEditingSede ? 'Guardar Cambios' : 'Guardar Sede' }}
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Modal Listado de Sedes -->
+            <div v-if="showSedesListModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full p-6 border border-gray-100 dark:border-gray-700 max-h-[90vh] flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                Sedes de {{ selectedClienteForSede?.nombre_cliente }}
+                            </h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Administra las sucursales y ubicaciones de este cliente.</p>
+                        </div>
+                        <button @click="showSedesListModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="overflow-y-auto flex-1 pr-2">
+                        <div v-if="!selectedClienteForSede?.sedes?.length" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            No hay sedes registradas.
+                        </div>
+                        <div v-else class="space-y-3">
+                            <div v-for="sede in selectedClienteForSede.sedes" :key="sede.id" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600">
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-sm">{{ sede.nombre_sede }}</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ sede.direccion || 'Sin dirección' }}</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">Lat: {{ sede.latitud || '-' }} | Lon: {{ sede.longitud || '-' }}</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button @click="abrirEditarSede(sede, selectedClienteForSede)" class="p-2 text-blue-600 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-lg transition" title="Editar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                    </button>
+                                    <button @click="eliminarSede(sede)" class="p-2 text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40 rounded-lg transition" title="Eliminar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                        <button @click="abrirAgregarSede(selectedClienteForSede)" class="px-4 py-2 bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-bold rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/60 transition text-xs flex items-center gap-2">
+                            <span>+</span> Agregar Nueva Sede
+                        </button>
+                    </div>
                 </div>
             </div>
 

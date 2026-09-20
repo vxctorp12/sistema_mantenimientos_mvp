@@ -58,6 +58,8 @@ Route::middleware(['auth', 'role:ADMIN'])->prefix('admin')->name('admin.')->grou
     // Gestión de Clientes y Sedes
     Route::resource('clientes', ClienteController::class)->only(['index', 'store', 'update']);
     Route::post('clientes/{cliente}/sedes', [ClienteController::class, 'storeSede'])->name('clientes.sedes.store');
+    Route::put('clientes/sedes/{sede}', [ClienteController::class, 'updateSede'])->name('clientes.sedes.update');
+    Route::delete('clientes/sedes/{sede}', [ClienteController::class, 'destroySede'])->name('clientes.sedes.destroy');
 
     // Gestión de Contratos y Asignación de Personal
     Route::resource('contratos', ContratoController::class)->only(['index', 'store', 'update']);
