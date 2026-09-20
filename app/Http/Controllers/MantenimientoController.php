@@ -160,7 +160,14 @@ class MantenimientoController extends Controller
                 ]
             );
 
-            // 2. Crear el Mantenimiento
+            // 2. Crear el Mantenimiento (Verificar que no exista uno previo)
+            if (Mantenimiento::where('equipo_id', $equipo->id)->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'codigo_inventario' => 'Este equipo ya cuenta con un registro de mantenimiento. Por favor, edite el registro existente en lugar de crear uno nuevo.',
+                    'numero_serie' => 'Este equipo ya cuenta con un registro de mantenimiento.'
+                ]);
+            }
+
             $mantenimiento = Mantenimiento::create([
                 'contrato_id'         => $validated['contrato_id'],
                 'equipo_id'           => $equipo->id,
