@@ -295,4 +295,39 @@ class DashboardController extends Controller
             'filters' => $request->only(['search'])
         ]);
     }
+
+    public function contratoDetalles(Request $request, Contrato $contrato)
+    {
+        $user = Auth::user();
+
+        if ($user->rol === 'TECNICO') {
+            if (!$contrato->tecnicos()->where('users.id', $user->id)->exists()) {
+                abort(403, 'No tienes acceso a este contrato.');
+            }
+        }
+
+        if ($user->rol === 'INVITADO') {
+            if ($contrato->cliente_id !== $user->cliente_id) {
+                abort(403, 'No tienes acceso a este contrato.');
+            }
+        }
+
+        $contrato->load(['cliente.sedes']);
+
+        $contratoInfo = [
+            'id' => $contrato->id,
+            'cliente_id' => $contrato->cliente_id,
+            'cliente_nombre' => $contrato->cliente->nombre_cliente ?? $contrato->cliente->nombre_empresa ?? 'Cliente',
+            'contacto_nombre' => $contrato->cliente->contacto_nombre ?? null,
+            'ubicacion' => $contrato->ubicacion_general,
+            'fecha_inicio' => $contrato->fecha_inicio ? $contrato->fecha_inicio->format('d/m/Y') : 'N/A',
+            'fecha_limite' => $contrato->fecha_limite ? $contrato->fecha_limite->format('d/m/Y') : 'Sin fecha límite',
+            'requerimientos_especiales' => $contrato->requerimientos_especiales,
+            'sedes' => $contrato->cliente->sedes ?? [],
+        ];
+
+        return Inertia::render('Contratos/Detalles', [
+            'contrato' => $contratoInfo
+        ]);
+    }
 }

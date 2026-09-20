@@ -102,6 +102,24 @@ const exportarExcel = () => {
             </div>
 
             <!-- ==================================================================== -->
+            <!-- CARD DE DETALLES DEL CONTRATO (NUEVO)                                -->
+            <!-- ==================================================================== -->
+            <div v-if="contratoActivo" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800/30 flex items-center justify-between group hover:shadow-md transition cursor-pointer" @click="router.get(route('contratos.detalles', contratoActivo.id))">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Información y Sedes del Contrato</h3>
+                        <p class="text-xs text-blue-600/80 dark:text-blue-300/80">Ver detalles, requerimientos especiales y ubicaciones en Google Maps.</p>
+                    </div>
+                </div>
+                <div class="text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:translate-x-1 transition-transform flex items-center">
+                    Ver Detalles <span class="ml-1 text-lg leading-none">➔</span>
+                </div>
+            </div>
+
+            <!-- ==================================================================== -->
             <!-- BENTO GRID PARA ROL TÉCNICO                                         -->
             <!-- ==================================================================== -->
             <div v-if="userRole === 'TECNICO'" class="space-y-6">

@@ -14,7 +14,10 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Contratos
     Route::get('/contratos/{contrato}/dashboard', [DashboardController::class, 'contratoDashboard'])->name('contratos.dashboard');
+    Route::get('/contratos/{contrato}/detalles', [DashboardController::class, 'contratoDetalles'])->name('contratos.detalles');
 
     // Mantenimientos
     Route::get('/mantenimientos', [MantenimientoController::class, 'index'])->name('mantenimientos.index');
