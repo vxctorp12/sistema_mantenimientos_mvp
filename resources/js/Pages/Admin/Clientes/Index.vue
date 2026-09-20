@@ -234,6 +234,17 @@ const guardarSede = () => {
                             <input v-model="sedeForm.telefono" type="text" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
                         </div>
 
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Latitud</label>
+                                <input v-model="sedeForm.latitud" type="number" step="any" placeholder="Ej: -12.046374" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Longitud</label>
+                                <input v-model="sedeForm.longitud" type="number" step="any" placeholder="Ej: -77.042793" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
+                            </div>
+                        </div>
+
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" @click="showSedeModal = false" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                                 Cancelar
