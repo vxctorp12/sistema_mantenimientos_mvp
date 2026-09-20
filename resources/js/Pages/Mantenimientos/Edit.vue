@@ -160,7 +160,10 @@ const form = useForm({
   contrato_id: props.mantenimiento.contrato_id || (props.contratos && props.contratos[0]?.id),
   fecha_mantenimiento: props.mantenimiento.fecha_mantenimiento 
     ? String(props.mantenimiento.fecha_mantenimiento).substring(0, 10) 
-    : new Date().toISOString().substring(0, 10),
+    : (() => {
+        const d = new Date();
+        return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+      })(),
   tipo_mantenimiento: props.mantenimiento.tipo_mantenimiento || 'PREVENTIVO',
   contador_bn: props.mantenimiento.contador_bn || 0,
   contador_color: props.mantenimiento.contador_color || 0,

@@ -19,7 +19,10 @@ const listaContratos = ref(props.contratos && props.contratos.length > 0 ? props
 
 const form = useForm({
   contrato_id: props.contrato_id_default || props.contratoActivo?.id || (listaContratos.value[0]?.id ?? ''),
-  fecha_mantenimiento: new Date().toISOString().slice(0, 10),
+  fecha_mantenimiento: (() => {
+    const d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+  })(),
   codigo_inventario: props.inventarioInicial || '',
   numero_serie: props.serieInicial || '',
   tipo_equipo: 'DESKTOP',

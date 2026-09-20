@@ -24,7 +24,7 @@ const marcarImpreso = () => {
                         Detalle de Mantenimiento #{{ mantenimiento.id }}
                     </h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        Fecha: {{ mantenimiento.fecha_mantenimiento ? new Date(mantenimiento.fecha_mantenimiento).toLocaleString('es-ES') : 'N/A' }}
+                        Fecha: {{ mantenimiento.fecha_mantenimiento ? String(mantenimiento.fecha_mantenimiento).substring(0, 10).split('-').reverse().join('/') : 'N/A' }}
                     </p>
                 </div>
                 <div class="flex items-center gap-3">

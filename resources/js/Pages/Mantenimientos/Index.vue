@@ -161,7 +161,7 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                     <tbody class="divide-y divide-gray-100 dark:divide-zinc-800 text-sm text-gray-700 dark:text-zinc-300">
                         <tr v-for="item in mantenimientos.data" :key="item.id" class="hover:bg-gray-50/50 dark:hover:bg-zinc-800/40">
                             <td class="p-4 text-xs font-medium text-gray-500 dark:text-zinc-400">
-                                {{ item.fecha_mantenimiento ? new Date(item.fecha_mantenimiento).toLocaleDateString('es-ES') : 'N/A' }}
+                                {{ item.fecha_mantenimiento ? String(item.fecha_mantenimiento).substring(0, 10).split('-').reverse().join('/') : 'N/A' }}
                             </td>
                             <td class="p-4">
                                 <Link :href="route('mantenimientos.show', item.id)" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">
