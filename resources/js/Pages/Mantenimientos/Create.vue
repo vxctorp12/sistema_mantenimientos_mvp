@@ -23,6 +23,7 @@ const form = useForm({
     const d = new Date();
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
   })(),
+  tipo_mantenimiento: 'PREVENTIVO',
   codigo_inventario: props.inventarioInicial || '',
   numero_serie: props.serieInicial || '',
   tipo_equipo: 'DESKTOP',
@@ -229,7 +230,7 @@ const submitForm = (andPrint = false) => {
             <span>📋</span> Datos del Contrato e Identificación Principal
           </h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Selección de Contrato -->
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Contrato Activo *</label>
@@ -242,13 +243,24 @@ const submitForm = (andPrint = false) => {
 
             <!-- Fecha de Mantenimiento -->
             <div>
-              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Fecha de Mantenimiento *</label>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Fecha de Atención *</label>
               <input 
                 v-model="form.fecha_mantenimiento" 
                 type="date" 
                 required
                 class="w-full text-sm border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-blue-500" 
               />
+            </div>
+
+            <!-- Tipo de Mantenimiento -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Tipo de Mantenimiento *</label>
+              <select v-model="form.tipo_mantenimiento" required class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-blue-500 font-medium font-bold">
+                <option value="PREVENTIVO">🛠️ PREVENTIVO</option>
+                <option value="CORRECTIVO">🚨 CORRECTIVO</option>
+                <option value="INSTALACION">📦 INSTALACIÓN</option>
+                <option value="RETIRO">🚫 RETIRO</option>
+              </select>
             </div>
 
             <!-- Identificador Principal: Código de Inventario / Activo Fijo -->
@@ -434,16 +446,16 @@ const submitForm = (andPrint = false) => {
         <!-- SECCIÓN 4: OBSERVACIONES Y RECOMENDACIONES -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 space-y-4">
           <h2 class="text-sm font-bold text-gray-800 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
-            <span>📝</span> Observaciones Generales y Recomendaciones
+            <span>📝</span> Diagnóstico y Trabajo Ejecutado
           </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Observaciones del Servicio</label>
-              <textarea v-model="form.observaciones" rows="3" placeholder="Detalle cualquier hallazgo o trabajo adicional realizado..." class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl"></textarea>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Revisión previa del equipo antes del mantenimiento</label>
+              <textarea v-model="form.recomendaciones" rows="3" placeholder="Condición del equipo al iniciar la atención..." class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl"></textarea>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Recomendaciones / Repuestos Requeridos</label>
-              <textarea v-model="form.recomendaciones" rows="3" placeholder="Recomendaciones para el cliente o componentes a cambiar..." class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl"></textarea>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Observaciones Generales</label>
+              <textarea v-model="form.observaciones" rows="3" placeholder="Notas adicionales o comentarios generales..." class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl"></textarea>
             </div>
           </div>
         </div>

@@ -137,6 +137,7 @@ class MantenimientoController extends Controller
             'observaciones'       => 'nullable|string',
             'recomendaciones'     => 'nullable|string',
             'fecha_mantenimiento' => 'nullable|date',
+            'tipo_mantenimiento'  => 'nullable|string|max:50',
             'checklist'           => 'nullable|array',
             'checklists'          => 'nullable|array',
         ]);
@@ -173,6 +174,7 @@ class MantenimientoController extends Controller
                 'equipo_id'           => $equipo->id,
                 'tecnico_id'          => Auth::id() ?? 1,
                 'fecha_mantenimiento' => $validated['fecha_mantenimiento'] ?? now(),
+                'tipo_mantenimiento'  => $validated['tipo_mantenimiento'] ?? 'PREVENTIVO',
                 'observaciones'       => $validated['observaciones'] ?? null,
                 'recomendaciones'     => $validated['recomendaciones'] ?? null,
                 'contador_bn'         => $validated['contador_bn'] ?? null,

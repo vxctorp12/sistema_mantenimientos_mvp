@@ -168,8 +168,7 @@ const form = useForm({
   contador_bn: props.mantenimiento.contador_bn || 0,
   contador_color: props.mantenimiento.contador_color || 0,
   direccion_ip: props.mantenimiento.direccion_ip || props.mantenimiento.equipo?.direccion_ip || '',
-  diagnostico: props.mantenimiento.diagnostico || props.mantenimiento.recomendaciones || '',
-  trabajo_realizado: props.mantenimiento.trabajo_realizado || props.mantenimiento.observaciones || '',
+  recomendaciones: props.mantenimiento.recomendaciones || '',
   observaciones: props.mantenimiento.observaciones || '',
   estado_equipo: props.mantenimiento.estado_equipo || 'OPERATIVO',
   estado_firma: props.mantenimiento.estado_firma || 'PENDIENTE',
@@ -464,31 +463,22 @@ const submit = () => {
             📝 Diagnóstico y Trabajo Ejecutado
           </h3>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4">
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-zinc-300 mb-1">
-                Diagnóstico Inicial / Recomendaciones
+                Revisión previa del equipo antes del mantenimiento
               </label>
-              <textarea v-model="form.diagnostico" rows="3" 
+              <textarea v-model="form.recomendaciones" rows="3" 
                         placeholder="Condición del equipo al iniciar la atención..." 
                         class="w-full bg-gray-50 dark:bg-zinc-800/80 border border-gray-300 dark:border-zinc-700 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-zinc-300 mb-1">
-                Trabajo Realizado / Solución Aplicada
-              </label>
-              <textarea v-model="form.trabajo_realizado" rows="3" 
-                        placeholder="Acciones correctivas o mantenimiento preventivo detallado..." 
-                        class="w-full bg-gray-50 dark:bg-zinc-800/80 border border-gray-300 dark:border-zinc-700 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
-            </div>
-
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                 Observaciones Generales
               </label>
               <textarea v-model="form.observaciones" rows="2" 
-                        placeholder="Notas adicionales o comentarios..." 
+                        placeholder="Notas adicionales o comentarios generales..." 
                         class="w-full bg-gray-50 dark:bg-zinc-800/80 border border-gray-300 dark:border-zinc-700 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
             </div>
           </div>
