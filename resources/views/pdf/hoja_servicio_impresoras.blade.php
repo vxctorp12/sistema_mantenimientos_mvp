@@ -357,7 +357,7 @@
             </tr>
             <tr>
                 <td colspan="3" style="height: 16px;">
-                    {{ $mantenimiento->diagnostico ?? $mantenimiento->recomendaciones ?? 'Impresora ingresa para mantenimiento preventivo programado.' }}
+                    {{ $mantenimiento->diagnostico ?? $mantenimiento->recomendaciones ?? '' }}
                 </td>
             </tr>
         </tbody>
@@ -465,7 +465,7 @@
             </tr>
             <tr>
                 <td colspan="2" style="height: 24px; vertical-align: top;">
-                    {{ $mantenimiento->observaciones ?? $mantenimiento->trabajo_realizado ?? 'Mantenimiento preventivo ejecutado satisfactoriamente. Impresora limpia, calibrada y lista para uso.' }}
+                    {{ $mantenimiento->observaciones ?? $mantenimiento->trabajo_realizado ?? '' }}
                 </td>
             </tr>
         </tbody>
