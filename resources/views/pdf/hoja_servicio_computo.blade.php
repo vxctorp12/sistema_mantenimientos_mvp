@@ -314,7 +314,7 @@
             </tr>
             <tr>
                 <td style="width: 50%;"><span class="font-bold text-blue">SISTEMA OPERATIVO:</span> {{ $mantenimiento->equipo->sistema_operativo ?? 'Windows' }}</td>
-                <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">DIRECCIÓN IP:</span> {{ $mantenimiento->direccion_ip ?? $mantenimiento->equipo->direccion_ip ?? 'DHCP' }}</td>
+                <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">DIRECCIÓN IP:</span> {{ $mantenimiento->direccion_ip ?? $mantenimiento->equipo->direccion_ip ?? '' }}</td>
             </tr>
         </tbody>
     </table>

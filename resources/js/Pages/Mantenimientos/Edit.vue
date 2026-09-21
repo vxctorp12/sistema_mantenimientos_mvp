@@ -165,8 +165,8 @@ const form = useForm({
         return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().substring(0, 10);
       })(),
   tipo_mantenimiento: props.mantenimiento.tipo_mantenimiento || 'PREVENTIVO',
-  contador_bn: props.mantenimiento.contador_bn || 0,
-  contador_color: props.mantenimiento.contador_color || 0,
+  contador_bn: props.mantenimiento.contador_bn ?? null,
+  contador_color: props.mantenimiento.contador_color ?? null,
   direccion_ip: props.mantenimiento.direccion_ip || props.mantenimiento.equipo?.direccion_ip || '',
   recomendaciones: props.mantenimiento.recomendaciones || '',
   observaciones: props.mantenimiento.observaciones || '',

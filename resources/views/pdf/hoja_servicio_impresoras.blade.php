@@ -318,12 +318,12 @@
                 <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">MODELO:</span> {{ $mantenimiento->equipo->modelo ?? 'N/A' }}</td>
             </tr>
             <tr>
-                <td style="width: 50%;"><span class="font-bold text-blue">DIRECCIÓN IP:</span> {{ $mantenimiento->direccion_ip ?? $mantenimiento->equipo->direccion_ip ?? '192.168.1.XX' }}</td>
+                <td style="width: 50%;"><span class="font-bold text-blue">DIRECCIÓN IP:</span> {{ $mantenimiento->direccion_ip ?? $mantenimiento->equipo->direccion_ip ?? '' }}</td>
                 <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">UBICACIÓN / UNIDAD:</span> {{ $mantenimiento->equipo->ubicacion_especifica ?? $mantenimiento->equipo->departamento_unidad ?? 'Sede Principal' }}</td>
             </tr>
             <tr>
-                <td style="width: 50%;"><span class="font-bold text-blue">CONTADOR B/N:</span> {{ number_format($mantenimiento->contador_bn ?? 0) }}</td>
-                <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">CONTADOR COLOR:</span> {{ number_format($mantenimiento->contador_color ?? 0) }}</td>
+                <td style="width: 50%;"><span class="font-bold text-blue">CONTADOR B/N:</span> {{ $mantenimiento->contador_bn !== null ? number_format($mantenimiento->contador_bn) : '' }}</td>
+                <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">CONTADOR COLOR:</span> {{ $mantenimiento->contador_color !== null ? number_format($mantenimiento->contador_color) : '' }}</td>
             </tr>
         </tbody>
     </table>
