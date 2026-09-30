@@ -309,7 +309,7 @@
                 <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">MODELO:</span> {{ $mantenimiento->equipo->modelo ?? 'N/A' }}</td>
             </tr>
             <tr>
-                <td style="width: 50%;"><span class="font-bold text-blue">ACCESORIOS:</span> Teclado, Mouse, Cable Poder</td>
+                <td style="width: 50%;"><span class="font-bold text-blue">ACCESORIOS:</span> Teclado, Mouse, Monitor, Cargador</td>
                 <td colspan="3" style="width: 50%;"><span class="font-bold text-blue">UBICACIÓN / UNIDAD:</span> {{ $mantenimiento->equipo->ubicacion_especifica ?? $mantenimiento->equipo->departamento_unidad ?? 'Sede Principal' }}</td>
             </tr>
             <tr>

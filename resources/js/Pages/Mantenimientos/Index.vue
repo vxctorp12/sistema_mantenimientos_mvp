@@ -173,11 +173,12 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mr-2">
                                     {{ item.equipo?.tipo_equipo }}
                                 </span>
-                                {{ item.equipo?.marca }} {{ item.equipo?.modelo }}
+                                {{ item.equipo?.marca !== 'N/A' && item.equipo?.marca !== 'n/a' ? item.equipo?.marca : '' }} 
+                                {{ item.equipo?.modelo !== 'N/A' && item.equipo?.modelo !== 'n/a' ? item.equipo?.modelo : '' }}
                             </td>
                             <td class="p-4">
-                                <div class="font-medium text-gray-900 dark:text-white">{{ item.equipo?.usuario_asignado || 'N/A' }}</div>
-                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ item.equipo?.departamento_unidad || 'N/A' }}</div>
+                                <div class="font-medium text-gray-900 dark:text-white">{{ (item.equipo?.usuario_asignado && item.equipo?.usuario_asignado !== 'N/A') ? item.equipo.usuario_asignado : '' }}</div>
+                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ (item.equipo?.departamento_unidad && item.equipo?.departamento_unidad !== 'N/A') ? item.equipo.departamento_unidad : '' }}</div>
                             </td>
                             <td class="p-4 text-xs font-medium text-gray-600 dark:text-zinc-300">
                                 {{ item.tecnico?.name || item.tecnico?.nombre || 'Técnico' }}

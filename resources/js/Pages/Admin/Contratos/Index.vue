@@ -36,7 +36,8 @@ const form = useForm({
   fecha_limite: '',
   ubicacion_general: '',
   requerimientos_especiales: '',
-  estado: 'ACTIVO'
+  estado: 'ACTIVO',
+  form_version: 'v1'
 });
 
 // Formulario de Asignación de Técnicos
@@ -90,6 +91,7 @@ const openEditModal = (contrato) => {
   form.ubicacion_general = contrato.ubicacion_general || '';
   form.requerimientos_especiales = contrato.requerimientos_especiales || '';
   form.estado = contrato.estado;
+  form.form_version = contrato.form_version || 'v1';
   showModal.value = true;
 };
 
@@ -464,6 +466,16 @@ const exportarExcel = (contratoId) => {
                   <option value="CANCELADO">CANCELADO (Ocultar)</option>
                 </select>
               </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Versión de Formulario</label>
+                <select 
+                  v-model="form.form_version" 
+                  class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="v1">Versión 1 (Vertical, Completo)</option>
+                  <option value="v2">Versión 2 (Horizontal, Simple)</option>
+                </select>
+              </div>
             </div>
 
             <!-- Requerimientos Especiales -->
@@ -475,6 +487,14 @@ const exportarExcel = (contratoId) => {
                 placeholder="Instrucciones de seguridad, horarios autorizados..."
                 class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
               ></textarea>
+            </div>
+
+            <!-- Mostrar Errores de Validación -->
+            <div v-if="Object.keys(form.errors).length > 0" class="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-xs">
+              <p class="font-bold">Por favor corrige los siguientes errores:</p>
+              <ul class="list-disc pl-5 mt-1">
+                <li v-for="(error, key) in form.errors" :key="key">{{ error }}</li>
+              </ul>
             </div>
 
             <!-- Botones de Acción -->

@@ -18,6 +18,7 @@ const isEditingSede = ref(false);
 const editingClienteId = ref(null);
 const editingSedeId = ref(null);
 const selectedClienteForSede = ref(null);
+const coordenadasTemp = ref('');
 
 const clienteForm = useForm({
     nombre_cliente: '',
@@ -43,6 +44,25 @@ const aplicarFiltros = () => {
 watch(search, () => {
     aplicarFiltros();
 });
+
+const procesarCoordenadas = () => {
+    if (!coordenadasTemp.value) {
+        sedeForm.latitud = '';
+        sedeForm.longitud = '';
+        return;
+    }
+    const partes = coordenadasTemp.value.split(/[,;\s]+/);
+    if (partes.length >= 2) {
+        const lat = parseFloat(partes[0].trim());
+        const lng = parseFloat(partes[1].trim());
+        if (!isNaN(lat) && !isNaN(lng)) {
+            sedeForm.latitud = lat;
+            sedeForm.longitud = lng;
+        }
+    }
+};
+
+watch(coordenadasTemp, procesarCoordenadas);
 
 const abrirCrearCliente = () => {
     isEditingCliente.value = false;
@@ -81,6 +101,7 @@ const abrirAgregarSede = (cliente) => {
     selectedClienteForSede.value = cliente;
     sedeForm.reset();
     sedeForm.clearErrors();
+    coordenadasTemp.value = '';
     showSedeModal.value = true;
 };
 
@@ -94,6 +115,7 @@ const abrirEditarSede = (sede, cliente) => {
     sedeForm.telefono = sede.telefono || '';
     sedeForm.latitud = sede.latitud || '';
     sedeForm.longitud = sede.longitud || '';
+    coordenadasTemp.value = (sede.latitud && sede.longitud) ? `${sede.latitud}, ${sede.longitud}` : '';
     showSedesListModal.value = false;
     showSedeModal.value = true;
 };
@@ -273,14 +295,11 @@ const guardarSede = () => {
                             <input v-model="sedeForm.telefono" type="text" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Latitud</label>
-                                <input v-model="sedeForm.latitud" type="number" step="any" placeholder="Ej: -12.046374" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Longitud</label>
-                                <input v-model="sedeForm.longitud" type="number" step="any" placeholder="Ej: -77.042793" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Coordenadas (Latitud, Longitud)</label>
+                            <input v-model="coordenadasTemp" type="text" placeholder="Ej: 13.6929, -89.2182 (Pégalo directo de Google Maps)" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm" />
+                            <div v-if="sedeForm.latitud && sedeForm.longitud" class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
+                                ✓ Coordenadas detectadas: Lat: {{ sedeForm.latitud }}, Lon: {{ sedeForm.longitud }}
                             </div>
                         </div>
 

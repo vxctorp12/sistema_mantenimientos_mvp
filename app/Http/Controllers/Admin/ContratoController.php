@@ -45,6 +45,12 @@ class ContratoController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->has('form_version')) {
+            $request->merge(['form_version' => strtolower($request->input('form_version'))]);
+        }
+
+        \Log::error('Contrato store request:', $request->all());
+
         $validated = $request->validate([
             'cliente_id'                => 'required|exists:clientes,id',
             'meta_equipos_total'        => 'required|integer|min:1',
@@ -53,9 +59,14 @@ class ContratoController extends Controller
             'fecha_limite'              => 'nullable|date|after_or_equal:fecha_inicio',
             'ubicacion_general'         => 'nullable|string|max:255',
             'requerimientos_especiales' => 'nullable|string',
-            'tecnicos'                  => 'array',
+            'estado'                    => 'required|in:ACTIVO,FINALIZADO,CANCELADO',
+            'form_version'              => 'required|in:v1,v2',
+            'tecnicos'                  => 'nullable|array',
             'tecnicos.*'                => 'exists:users,id'
         ]);
+
+        $validated['creado_por'] = $request->user()->id ?? null;
+        $validated['actualizado_por'] = $request->user()->id ?? null;
 
         $contrato = Contrato::create($validated);
 
@@ -68,6 +79,10 @@ class ContratoController extends Controller
 
     public function update(Request $request, Contrato $contrato)
     {
+        if ($request->has('form_version')) {
+            $request->merge(['form_version' => strtolower($request->input('form_version'))]);
+        }
+
         $validated = $request->validate([
             'cliente_id'                => 'sometimes|required|exists:clientes,id',
             'meta_equipos_total'        => 'required|integer|min:1',
@@ -77,9 +92,12 @@ class ContratoController extends Controller
             'ubicacion_general'         => 'nullable|string|max:255',
             'requerimientos_especiales' => 'nullable|string',
             'estado'                    => 'required|in:ACTIVO,FINALIZADO,CANCELADO',
-            'tecnicos'                  => 'array',
+            'form_version'              => 'required|in:v1,v2',
+            'tecnicos'                  => 'nullable|array',
             'tecnicos.*'                => 'exists:users,id'
         ]);
+
+        $validated['actualizado_por'] = $request->user()->id ?? null;
 
         $contrato->update($validated);
 

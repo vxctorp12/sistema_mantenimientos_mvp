@@ -90,7 +90,7 @@ class MantenimientoController extends Controller
         $codigoInventario = $request->input('codigo_inventario');
 
         // Obtener contratos activos asignados al técnico (o todos si es ADMIN)
-        $query = Contrato::with('cliente')->where('estado', 'ACTIVO');
+        $query = Contrato::with('cliente.sedes')->where('estado', 'ACTIVO');
 
         if ($user && $user->rol === 'TECNICO') {
             $query->whereHas('tecnicos', function ($q) use ($user) {
@@ -100,12 +100,22 @@ class MantenimientoController extends Controller
 
         $contratos = $query->get();
         if ($contratos->isEmpty()) {
-            $contratos = Contrato::with('cliente')->where('estado', 'ACTIVO')->get();
+            $contratos = Contrato::with('cliente.sedes')->where('estado', 'ACTIVO')->get();
         }
 
         $contratoActivo = $contratoId 
             ? $contratos->firstWhere('id', $contratoId) 
             : $contratos->first();
+
+        if ($contratoActivo && $contratoActivo->form_version === 'v2') {
+            return Inertia::render('Mantenimientos/CreateV2', [
+                'contratos'           => $contratos,
+                'contratoActivo'      => $contratoActivo,
+                'contrato_id_default' => $contratoActivo?->id,
+                'serieInicial'        => $serie,
+                'inventarioInicial'   => $codigoInventario,
+            ]);
+        }
 
         return Inertia::render('Mantenimientos/Create', [
             'contratos'           => $contratos,
@@ -124,10 +134,10 @@ class MantenimientoController extends Controller
         $validated = $request->validate([
             'contrato_id'         => 'required|exists:contratos,id',
             'codigo_inventario'   => 'required|string|max:50',
-            'numero_serie'        => 'required|string|max:100',
-            'tipo_equipo'         => 'required|in:DESKTOP,LAPTOP,IMPRESORA,OTRO',
-            'marca'               => 'required|string|max:50',
-            'modelo'              => 'required|string|max:50',
+            'numero_serie'        => 'nullable|string|max:100',
+            'tipo_equipo'         => 'required|in:DESKTOP,LAPTOP,ESCANER,ESCÁNER,IMPRESORA,OTRO',
+            'marca'               => 'nullable|string|max:50',
+            'modelo'              => 'nullable|string|max:50',
             'departamento_unidad' => 'nullable|string|max:100',
             'usuario_asignado'    => 'nullable|string|max:100',
             'direccion_ip'        => 'nullable|string|max:45',
@@ -149,10 +159,10 @@ class MantenimientoController extends Controller
             $equipo = Equipo::updateOrCreate(
                 ['codigo_inventario' => trim($validated['codigo_inventario'])],
                 [
-                    'numero_serie'        => trim($validated['numero_serie']),
+                    'numero_serie'        => !empty(trim($validated['numero_serie'] ?? '')) ? trim($validated['numero_serie']) : null,
                     'tipo_equipo'         => $validated['tipo_equipo'],
-                    'marca'               => $validated['marca'],
-                    'modelo'              => $validated['modelo'],
+                    'marca'               => $validated['marca'] ?? 'N/A',
+                    'modelo'              => $validated['modelo'] ?? 'N/A',
                     'departamento_unidad' => $validated['departamento_unidad'] ?? null,
                     'usuario_asignado'    => $validated['usuario_asignado'] ?? null,
                     'direccion_ip'        => $validated['direccion_ip'] ?? null,
@@ -253,11 +263,18 @@ class MantenimientoController extends Controller
         }
 
         $contratos = ($user && $user->rol === 'ADMIN')
-            ? Contrato::with('cliente')->where('estado', 'ACTIVO')->get()
-            : ($user ? $user->contratos()->with('cliente')->where('estado', 'ACTIVO')->get() : Contrato::with('cliente')->get());
+            ? Contrato::with('cliente.sedes')->where('estado', 'ACTIVO')->get()
+            : ($user ? $user->contratos()->with('cliente.sedes')->where('estado', 'ACTIVO')->get() : Contrato::with('cliente.sedes')->get());
 
         if ($contratos->isEmpty()) {
-            $contratos = Contrato::with('cliente')->where('estado', 'ACTIVO')->get();
+            $contratos = Contrato::with('cliente.sedes')->where('estado', 'ACTIVO')->get();
+        }
+
+        if ($mantenimiento->contrato && $mantenimiento->contrato->form_version === 'v2') {
+            return Inertia::render('Mantenimientos/EditV2', [
+                'mantenimiento' => $mantenimiento,
+                'contratos'     => $contratos,
+            ]);
         }
 
         return Inertia::render('Mantenimientos/Edit', [
@@ -282,11 +299,12 @@ class MantenimientoController extends Controller
         $validated = $request->validate([
             // Datos del Equipo
             'codigo_inventario'    => 'required|string|max:100',
-            'numero_serie'         => 'required|string|max:100',
-            'tipo_equipo'          => 'required|in:DESKTOP,LAPTOP,IMPRESORA,OTRO',
-            'marca'                => 'required|string|max:100',
-            'modelo'               => 'required|string|max:100',
+            'numero_serie'         => 'nullable|string|max:100',
+            'tipo_equipo'          => 'required|in:DESKTOP,LAPTOP,ESCANER,ESCÁNER,IMPRESORA,OTRO',
+            'marca'                => 'nullable|string|max:100',
+            'modelo'               => 'nullable|string|max:100',
             'ubicacion_especifica' => 'nullable|string|max:150',
+            'departamento_unidad'  => 'nullable|string|max:150',
             'usuario_asignado'     => 'nullable|string|max:150',
 
             // Datos del Mantenimiento
@@ -316,12 +334,12 @@ class MantenimientoController extends Controller
                 if ($equipo) {
                     $equipo->update([
                         'codigo_inventario'    => trim($validated['codigo_inventario']),
-                        'numero_serie'         => trim($validated['numero_serie']),
+                        'numero_serie'         => !empty(trim($validated['numero_serie'] ?? '')) ? trim($validated['numero_serie']) : (!empty(trim($equipo->numero_serie ?? '')) ? $equipo->numero_serie : null),
                         'tipo_equipo'          => $validated['tipo_equipo'],
-                        'marca'                => $validated['marca'],
-                        'modelo'               => $validated['modelo'],
+                        'marca'                => $validated['marca'] ?? $equipo->marca,
+                        'modelo'               => $validated['modelo'] ?? $equipo->modelo,
                         'ubicacion_especifica' => $validated['ubicacion_especifica'] ?? $equipo->ubicacion_especifica,
-                        'departamento_unidad' => $validated['ubicacion_especifica'] ?? $equipo->departamento_unidad,
+                        'departamento_unidad' => $validated['departamento_unidad'] ?? $equipo->departamento_unidad,
                         'usuario_asignado'     => $validated['usuario_asignado'] ?? $equipo->usuario_asignado,
                         'direccion_ip'         => $validated['direccion_ip'] ?? $equipo->direccion_ip,
                         'actualizado_por'      => Auth::id(),
@@ -400,6 +418,12 @@ class MantenimientoController extends Controller
 
         $logoBase64 = $this->getLogoBase64();
         $watermarkBase64 = $this->getWatermarkBase64();
+
+        if ($mantenimiento->contrato && $mantenimiento->contrato->form_version === 'v2') {
+            return view('pdf.hoja_servicio_v2', [
+                'mantenimiento'   => $mantenimiento,
+            ]);
+        }
 
         return view('pdf.hoja_servicio', [
             'mantenimiento'   => $mantenimiento,
@@ -531,6 +555,12 @@ class MantenimientoController extends Controller
 
         $logoBase64 = $this->getLogoBase64();
         $watermarkBase64 = $this->getWatermarkBase64();
+
+        if ($mantenimientos->first()->contrato && $mantenimientos->first()->contrato->form_version === 'v2') {
+            return view('pdf.hoja_servicio_v2', [
+                'mantenimientos'  => $mantenimientos,
+            ]);
+        }
 
         return view('pdf.hoja_servicio_batch', [
             'mantenimientos'  => $mantenimientos,

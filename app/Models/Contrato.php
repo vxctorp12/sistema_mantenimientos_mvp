@@ -25,6 +25,7 @@ class Contrato extends Model
         'ubicacion_general',
         'requerimientos_especiales',
         'estado',
+        'form_version',
         'creado_por',
         'actualizado_por',
     ];
