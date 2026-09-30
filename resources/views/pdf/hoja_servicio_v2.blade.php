@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Hoja de Servicio - Mantenimiento v2</title>
+    <title>{{ $tituloDocumento ?? 'Hoja de Servicio - Mantenimiento v2' }}</title>
     <style>
         /* Configuración de la página en horizontal */
         @page {

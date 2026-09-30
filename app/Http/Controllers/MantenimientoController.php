@@ -422,6 +422,7 @@ class MantenimientoController extends Controller
         if ($mantenimiento->contrato && $mantenimiento->contrato->form_version === 'v2') {
             return view('pdf.hoja_servicio_v2', [
                 'mantenimiento'   => $mantenimiento,
+                'tituloDocumento' => $nombreArchivo,
             ]);
         }
 
@@ -593,6 +594,7 @@ class MantenimientoController extends Controller
         if ($mantenimientos->first()->contrato && $mantenimientos->first()->contrato->form_version === 'v2') {
             return view('pdf.hoja_servicio_v2', [
                 'mantenimientos'  => $mantenimientos,
+                'tituloDocumento' => $nombreArchivo,
             ]);
         }
 
