@@ -24,7 +24,7 @@
         .form-container {
             width: 100%;
             page-break-inside: avoid;
-            margin-bottom: 0px; 
+            margin-bottom: 15px; 
         }
 
         /* Tabla principal del formulario */
@@ -185,8 +185,8 @@
         </table>
     </div>
 
-    {{-- Forzamos un salto de página después de cada formulario si estamos imprimiendo en lote --}}
-    @if(count($listaMantenimientos) > 1 && !$loop->last)
+    {{-- Salto de página cada 2 formularios si hay espacio suficiente --}}
+    @if(count($listaMantenimientos) > 1 && ($index + 1) % 2 == 0 && !$loop->last)
         <div style="page-break-after: always;"></div>
     @endif
 
