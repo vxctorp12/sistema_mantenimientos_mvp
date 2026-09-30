@@ -12,10 +12,10 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 10px;
+            font-size: 9px;
             color: #000;
             margin: 0;
-            padding: 10mm; /* Mueve el margen a padding del body para no cortar contenido */
+            padding: 5mm; /* Margen reducido para maximizar el espacio disponible */
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -24,7 +24,7 @@
         .form-container {
             width: 100%;
             page-break-inside: avoid;
-            margin-bottom: 20px; /* Separación si hay 2 por página */
+            margin-bottom: 0px; 
         }
 
         /* Tabla principal del formulario */
@@ -36,7 +36,7 @@
 
         th, td {
             border: 1px solid #000;
-            padding: 4px;
+            padding: 2px 4px;
             vertical-align: middle;
         }
 
@@ -52,7 +52,7 @@
 
         .header-label {
             font-weight: bold;
-            font-size: 10px;
+            font-size: 9px;
         }
 
         .chk-col {
@@ -69,7 +69,7 @@
         }
         
         .observaciones-box {
-            height: 50px;
+            height: 30px;
             vertical-align: top;
         }
 
