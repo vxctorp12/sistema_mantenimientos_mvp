@@ -48,6 +48,14 @@ const exportarPdfMasivoUrl = computed(() => {
     return `${route('mantenimientos.exportar-pdf-masivo')}?${params.toString()}`;
 });
 
+const eliminarMantenimiento = (id) => {
+    if (confirm('¿Estás seguro de que deseas eliminar este mantenimiento? Si el equipo asociado no tiene otros mantenimientos, también será eliminado del inventario. Esta acción no se puede deshacer.')) {
+        router.delete(route('mantenimientos.destroy', id), {
+            preserveScroll: true,
+        });
+    }
+};
+
 watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
     aplicarFiltros();
 });
@@ -202,7 +210,12 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                                       class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">
                                     Editar
                                 </Link>
-                                <span v-else class="text-xs text-gray-400 dark:text-zinc-500">Solo lectura</span>
+                                <button v-if="userRole === 'ADMIN'" 
+                                      @click="eliminarMantenimiento(item.id)" 
+                                      class="text-xs font-bold text-red-600 dark:text-red-400 hover:underline">
+                                    Eliminar
+                                </button>
+                                <span v-if="userRole !== 'ADMIN' && item.tecnico_id !== currentUser.id" class="text-xs text-gray-400 dark:text-zinc-500">Solo lectura</span>
                             </td>
                         </tr>
                         <tr v-if="!mantenimientos?.data?.length">

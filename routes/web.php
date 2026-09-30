@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mantenimientos/{mantenimiento}/edit', [MantenimientoController::class, 'edit'])->name('mantenimientos.edit');
     Route::get('/mantenimientos/{mantenimiento}/editar', [MantenimientoController::class, 'edit']);
     Route::put('/mantenimientos/{mantenimiento}', [MantenimientoController::class, 'update'])->name('mantenimientos.update');
+    Route::delete('/mantenimientos/{mantenimiento}', [MantenimientoController::class, 'destroy'])->name('mantenimientos.destroy');
     Route::get('/mantenimientos/{mantenimiento}/pdf', [MantenimientoController::class, 'descargarPdf'])->name('mantenimientos.pdf');
     Route::get('/mantenimientos-exportar-pdf-masivo', [MantenimientoController::class, 'exportarPdfMasivo'])->name('mantenimientos.exportar-pdf-masivo');
     Route::post('/mantenimientos/{mantenimiento}/marcar-impreso', [MantenimientoController::class, 'marcarImpreso'])->name('mantenimientos.marcar-impreso');

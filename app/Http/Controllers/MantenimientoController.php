@@ -447,6 +447,40 @@ class MantenimientoController extends Controller
 
         return back()->with('success', 'El reporte ha sido marcado como impreso.');
     }
+    /**
+     * Eliminar el reporte de mantenimiento y su equipo si no tiene otros mantenimientos asociados.
+     */
+    public function destroy(Mantenimiento $mantenimiento)
+    {
+        $user = Auth::user();
+
+        // Solo permitir a ADMIN
+        if ($user->rol !== 'ADMIN') {
+            return back()->with('error', 'No tienes permisos para eliminar mantenimientos.');
+        }
+
+        DB::transaction(function () use ($mantenimiento) {
+            $equipoId = $mantenimiento->equipo_id;
+
+            // Eliminar dependencias del mantenimiento
+            $mantenimiento->checklists()->delete();
+            // $mantenimiento->repuestos()->delete(); // Si existiera una tabla de repuestos
+
+            // Eliminar el mantenimiento
+            $mantenimiento->delete();
+
+            // Si hay un equipo asociado, verificar si se quedó huerfano (sin otros mantenimientos)
+            if ($equipoId) {
+                $otrosMantenimientos = Mantenimiento::where('equipo_id', $equipoId)->count();
+                if ($otrosMantenimientos === 0) {
+                    Equipo::where('id', $equipoId)->delete();
+                }
+            }
+        });
+
+        return back()->with('success', 'Registro de mantenimiento eliminado correctamente.');
+    }
+
 
     /**
      * Generar / Descargar PDF Masivo Consolidado según los filtros aplicados en el listado.
