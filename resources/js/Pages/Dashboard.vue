@@ -425,7 +425,7 @@ const mostrarDato = (valor) => {
                             <tr class="text-gray-400 border-b border-gray-100 dark:border-gray-700 font-semibold">
                                 <th class="pb-3">Fecha</th>
                                 <th class="pb-3">Serie / Inventario</th>
-                                <th class="pb-3">Equipo</th>
+                                <th class="pb-3">Unidad</th>
                                 <th class="pb-3">Técnico</th>
                                 <th class="pb-3 text-right">Acción</th>
                             </tr>
@@ -440,7 +440,7 @@ const mostrarDato = (valor) => {
                                     </span>
                                 </td>
                                 <td class="py-3 text-gray-600 dark:text-gray-300">
-                                    {{ mostrarDato(m.marca_modelo) || (mostrarDato(m.marca) + ' ' + mostrarDato(m.modelo)).trim() }}
+                                    {{ mostrarDato(m.departamento_unidad) || 'Sin Unidad' }}
                                 </td>
                                 <td class="py-3 text-gray-600 dark:text-gray-300 font-medium">{{ m.tecnico_nombre }}</td>
                                 <td class="py-3 text-right">

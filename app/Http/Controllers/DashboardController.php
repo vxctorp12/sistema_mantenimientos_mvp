@@ -169,6 +169,7 @@ class DashboardController extends Controller
                     'marca_modelo' => ($mtto->equipo->marca ?? '') . ' ' . ($mtto->equipo->modelo ?? ''),
                     'tecnico_id' => $mtto->tecnico_id,
                     'tecnico_nombre' => $mtto->tecnico->name ?? $mtto->tecnico->nombre ?? 'Sin asignar',
+                    'departamento_unidad' => $mtto->equipo->departamento_unidad ?? '',
                     'impreso' => (bool)$mtto->impreso,
                     'estado_firma' => $mtto->estado_firma
                 ];
