@@ -42,6 +42,13 @@ const aplicarFiltros = () => {
     }, { preserveState: true, replace: true });
 };
 
+const mostrarDato = (valor) => {
+    if (!valor) return '';
+    const v = String(valor).toUpperCase().trim();
+    if (['N/A', 'S/N', 'SIN SERIE', 'NO APLICA'].includes(v)) return '';
+    return valor;
+};
+
 // Datos para gráficos
 const chartDataDiarios = computed(() => {
     return {
@@ -193,11 +200,11 @@ const barOptions = {
                                 </td>
                                 <td class="p-4">
                                     <div class="font-bold text-gray-900 dark:text-white">{{ mtto.equipo?.tipo_equipo || 'OTRO' }}</div>
-                                    <div class="text-xs text-gray-500">{{ mtto.equipo?.marca }} {{ mtto.equipo?.modelo }}</div>
+                                    <div class="text-xs text-gray-500">{{ mostrarDato(mtto.equipo?.marca) }} {{ mostrarDato(mtto.equipo?.modelo) }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-mono">
-                                    <div>Serie: {{ mtto.equipo?.numero_serie || 'N/A' }}</div>
-                                    <div class="text-gray-500">Inv: {{ mtto.equipo?.codigo_inventario || 'N/A' }}</div>
+                                    <div>Serie: {{ mostrarDato(mtto.equipo?.numero_serie) || 'Sin Serie' }}</div>
+                                    <div class="text-gray-500">Inv: {{ mostrarDato(mtto.equipo?.codigo_inventario) || 'Sin Inv.' }}</div>
                                 </td>
                                 <td class="p-4">
                                     {{ mtto.tecnico?.name || 'Sin Asignar' }}

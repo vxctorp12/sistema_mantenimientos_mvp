@@ -45,6 +45,13 @@ const exportarExcel = () => {
         window.open(route('admin.contratos.exportar-excel', contratoActivo.value.id), '_blank');
     }
 };
+
+const mostrarDato = (valor) => {
+    if (!valor) return '';
+    const v = String(valor).toUpperCase().trim();
+    if (['N/A', 'S/N', 'SIN SERIE', 'NO APLICA'].includes(v)) return '';
+    return valor;
+};
 </script>
 
 <template>
@@ -427,12 +434,14 @@ const exportarExcel = () => {
                             <tr v-for="m in metricas.ultimos_mantenimientos" :key="m.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                                 <td class="py-3 text-gray-600 dark:text-gray-400">{{ m.fecha }}</td>
                                 <td class="py-3 font-bold text-gray-800 dark:text-white">
-                                    {{ m.serie || m.equipo_serie }} 
-                                    <span v-if="m.codigo_inventario || (m.equipo_inventario && m.equipo_inventario !== 'N/A')" class="text-gray-400 font-normal">
-                                        ({{ m.codigo_inventario || m.equipo_inventario }})
+                                    {{ mostrarDato(m.serie || m.equipo_serie) }} 
+                                    <span v-if="mostrarDato(m.codigo_inventario || m.equipo_inventario)" class="text-gray-400 font-normal">
+                                        ({{ mostrarDato(m.codigo_inventario || m.equipo_inventario) }})
                                     </span>
                                 </td>
-                                <td class="py-3 text-gray-600 dark:text-gray-300">{{ m.marca_modelo || ((m.marca || '') + ' ' + (m.modelo || '')) }}</td>
+                                <td class="py-3 text-gray-600 dark:text-gray-300">
+                                    {{ mostrarDato(m.marca_modelo) || (mostrarDato(m.marca) + ' ' + mostrarDato(m.modelo)).trim() }}
+                                </td>
                                 <td class="py-3 text-gray-600 dark:text-gray-300 font-medium">{{ m.tecnico_nombre }}</td>
                                 <td class="py-3 text-right">
                                     <!-- Botón editar solo visible si es ADMIN o si el TÉCNICO es el dueño del registro -->

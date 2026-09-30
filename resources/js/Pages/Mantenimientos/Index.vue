@@ -48,6 +48,13 @@ const exportarPdfMasivoUrl = computed(() => {
     return `${route('mantenimientos.exportar-pdf-masivo')}?${params.toString()}`;
 });
 
+const mostrarDato = (valor) => {
+    if (!valor) return '';
+    const v = String(valor).toUpperCase().trim();
+    if (['N/A', 'S/N', 'SIN SERIE', 'NO APLICA'].includes(v)) return '';
+    return valor;
+};
+
 const eliminarMantenimiento = (id) => {
     if (confirm('¿Estás seguro de que deseas eliminar este mantenimiento? Si el equipo asociado no tiene otros mantenimientos, también será eliminado del inventario. Esta acción no se puede deshacer.')) {
         router.delete(route('mantenimientos.destroy', id), {
@@ -173,20 +180,20 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                             </td>
                             <td class="p-4">
                                 <Link :href="route('mantenimientos.show', item.id)" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">
-                                    {{ item.equipo?.numero_serie }}
+                                    {{ mostrarDato(item.equipo?.numero_serie) || 'Sin Serie' }}
                                 </Link>
-                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ item.equipo?.codigo_inventario || 'Sin Inv.' }}</div>
+                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ mostrarDato(item.equipo?.codigo_inventario) || 'Sin Inv.' }}</div>
                             </td>
                             <td class="p-4">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mr-2">
                                     {{ item.equipo?.tipo_equipo }}
                                 </span>
-                                {{ item.equipo?.marca !== 'N/A' && item.equipo?.marca !== 'n/a' ? item.equipo?.marca : '' }} 
-                                {{ item.equipo?.modelo !== 'N/A' && item.equipo?.modelo !== 'n/a' ? item.equipo?.modelo : '' }}
+                                {{ mostrarDato(item.equipo?.marca) }} 
+                                {{ mostrarDato(item.equipo?.modelo) }}
                             </td>
                             <td class="p-4">
-                                <div class="font-medium text-gray-900 dark:text-white">{{ (item.equipo?.usuario_asignado && item.equipo?.usuario_asignado !== 'N/A') ? item.equipo.usuario_asignado : '' }}</div>
-                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ (item.equipo?.departamento_unidad && item.equipo?.departamento_unidad !== 'N/A') ? item.equipo.departamento_unidad : '' }}</div>
+                                <div class="font-medium text-gray-900 dark:text-white">{{ mostrarDato(item.equipo?.usuario_asignado) }}</div>
+                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ mostrarDato(item.equipo?.departamento_unidad) }}</div>
                             </td>
                             <td class="p-4 text-xs font-medium text-gray-600 dark:text-zinc-300">
                                 {{ item.tecnico?.name || item.tecnico?.nombre || 'Técnico' }}
