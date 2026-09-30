@@ -185,8 +185,8 @@
         </table>
     </div>
 
-    {{-- Forzamos un salto de página cada 2 formularios si estamos imprimiendo en lote --}}
-    @if(count($listaMantenimientos) > 1 && ($index + 1) % 2 == 0 && !$loop->last)
+    {{-- Forzamos un salto de página después de cada formulario si estamos imprimiendo en lote --}}
+    @if(count($listaMantenimientos) > 1 && !$loop->last)
         <div style="page-break-after: always;"></div>
     @endif
 
