@@ -306,7 +306,6 @@ const submitForm = (andPrint = false) => {
                 <option value="DESKTOP">DESKTOP</option>
                 <option value="LAPTOP">LAPTOP</option>
                 <option value="IMPRESORA">IMPRESORA</option>
-                <option value="OTRO">OTRO</option>
               </select>
             </div>
 

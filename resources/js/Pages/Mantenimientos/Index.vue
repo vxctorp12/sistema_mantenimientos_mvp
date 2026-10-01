@@ -121,7 +121,6 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                             <option value="DESKTOP">Desktop</option>
                             <option value="LAPTOP">Laptop</option>
                             <option value="IMPRESORA">Impresora</option>
-                            <option value="OTRO">Otro</option>
                         </select>
                     </div>
 

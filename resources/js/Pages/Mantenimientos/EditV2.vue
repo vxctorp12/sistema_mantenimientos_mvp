@@ -99,24 +99,24 @@ const cargarChecklistsSegunTipo = (tipo) => {
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza general externa del equipo (incluyendo todos los accesorios externos).', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza del ventilador de salida de aire', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza del teclado y el touch pad.', realizado: true, comentario: '' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza de lente de CD ROM ó DVD+-RW', realizado: true, comentario: '' },
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza de lente de CD ROM ó DVD+-RW', realizado: false, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza de los puertos de conectividad.', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza de la pantalla de cristal líquido.', realizado: true, comentario: '' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Chequeo de voltaje de la fuente de alimentación.', realizado: true, comentario: '' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Realizar Diagnósticos al estado de la batería interna de la laptop.', realizado: true, comentario: '' },
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Chequeo de voltaje de la fuente de alimentación.', realizado: false, comentario: '' },
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Realizar Diagnósticos al estado de la batería interna de la laptop.', realizado: false, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Comprobar que el equipo queda funcionando a entera satisfacción del usuario.', realizado: true, comentario: 'EQUIPO QUEDA FUNCIONANDO' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Versión de Windows y Office:', realizado: true, comentario: '' }
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Versión de Windows y Office:', realizado: false, comentario: '' }
     ];
   } else {
     baseItems = [
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza general externa del equipo (incluye todos los dispositivos externos, monitor, teclado y mouse y demás dispositivos).', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Limpieza interna de todos los dispositivos del CPU.', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Lubricación y limpieza de ventiladores del chasis y microprocesador.', realizado: true, comentario: '' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Verificación del uso adecuado de la memoria (administrador de tareas).', realizado: true, comentario: '' },
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Verificación del uso adecuado de la memoria (administrador de tareas).', realizado: false, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Chequeo y cambio interno de baterías CMOS.', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Chequeo de voltaje de la fuente y aspirado.', realizado: true, comentario: '' },
       { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Comprobar que el equipo queda funcionando a entera satisfacción del usuario.', realizado: true, comentario: 'EQUIPO QUEDA EN FUNCIONAMIENTO' },
-      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Versión de Windows y Office:', realizado: true, comentario: '' }
+      { seccion: 'MANTENIMIENTO PREVENTIVO', nombre: 'Versión de Windows y Office:', realizado: false, comentario: '' }
     ];
   }
 
@@ -234,7 +234,6 @@ const submit = () => {
                 <option value="LAPTOP">LAPTOP</option>
                 <option value="ESCANER">ESCÁNER</option>
                 <option value="IMPRESORA">IMPRESORA</option>
-                <option value="OTRO">OTRO</option>
               </select>
             </div>
 

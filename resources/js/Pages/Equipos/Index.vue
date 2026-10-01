@@ -65,7 +65,6 @@ watch([search, tipoEquipo, sinMantenimiento], () => {
                     <option value="DESKTOP">Desktop</option>
                     <option value="LAPTOP">Laptop</option>
                     <option value="IMPRESORA">Impresora</option>
-                    <option value="OTRO">Otro</option>
                 </select>
 
                 <select v-model="sinMantenimiento" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-blue-500">
