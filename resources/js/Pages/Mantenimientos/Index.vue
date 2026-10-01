@@ -18,6 +18,7 @@ const tipoEquipo = ref(props.filters?.tipo_equipo || '');
 const impreso = ref(props.filters?.impreso ?? '');
 const fechaInicio = ref(props.filters?.fecha_inicio || '');
 const fechaFin = ref(props.filters?.fecha_fin || '');
+const contratoId = ref(props.filters?.contrato_id || '');
 
 const aplicarFiltros = () => {
     router.get(route('mantenimientos.index'), {
@@ -26,6 +27,7 @@ const aplicarFiltros = () => {
         impreso: impreso.value,
         fecha_inicio: fechaInicio.value,
         fecha_fin: fechaFin.value,
+        contrato_id: contratoId.value,
     }, { preserveState: true, replace: true });
 };
 
@@ -35,6 +37,7 @@ const limpiarFiltros = () => {
     impreso.value = '';
     fechaInicio.value = '';
     fechaFin.value = '';
+    contratoId.value = '';
     aplicarFiltros();
 };
 
@@ -45,6 +48,7 @@ const exportarPdfMasivoUrl = computed(() => {
     if (impreso.value !== '' && impreso.value !== null) params.append('impreso', impreso.value);
     if (fechaInicio.value) params.append('fecha_inicio', fechaInicio.value);
     if (fechaFin.value) params.append('fecha_fin', fechaFin.value);
+    if (contratoId.value) params.append('contrato_id', contratoId.value);
     return `${route('mantenimientos.exportar-pdf-masivo')}?${params.toString()}`;
 });
 
@@ -63,7 +67,7 @@ const eliminarMantenimiento = (id) => {
     }
 };
 
-watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
+watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
     aplicarFiltros();
 });
 </script>
@@ -187,8 +191,10 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin], () => {
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mr-2">
                                     {{ item.equipo?.tipo_equipo }}
                                 </span>
-                                {{ mostrarDato(item.equipo?.marca) }} 
-                                {{ mostrarDato(item.equipo?.modelo) }}
+                                <template v-if="item.contrato?.form_version !== 'v2'">
+                                    {{ mostrarDato(item.equipo?.marca) }} 
+                                    {{ mostrarDato(item.equipo?.modelo) }}
+                                </template>
                             </td>
                             <td class="p-4">
                                 <div class="font-medium text-gray-900 dark:text-white">{{ mostrarDato(item.equipo?.usuario_asignado) }}</div>

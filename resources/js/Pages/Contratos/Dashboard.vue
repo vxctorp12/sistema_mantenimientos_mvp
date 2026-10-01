@@ -200,7 +200,11 @@ const barOptions = {
                                 </td>
                                 <td class="p-4">
                                     <div class="font-bold text-gray-900 dark:text-white">{{ mtto.equipo?.tipo_equipo || 'OTRO' }}</div>
-                                    <div class="text-xs text-gray-500">{{ mostrarDato(mtto.equipo?.marca) }} {{ mostrarDato(mtto.equipo?.modelo) }}</div>
+                                    <div class="text-xs text-gray-500">
+                                        <template v-if="contrato?.form_version !== 'v2'">
+                                            {{ mostrarDato(mtto.equipo?.marca) }} {{ mostrarDato(mtto.equipo?.modelo) }}
+                                        </template>
+                                    </div>
                                 </td>
                                 <td class="p-4 text-xs font-mono">
                                     <div>Serie: {{ mostrarDato(mtto.equipo?.numero_serie) || 'Sin Serie' }}</div>

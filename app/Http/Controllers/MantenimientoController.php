@@ -71,11 +71,16 @@ class MantenimientoController extends Controller
             $query->where('impreso', $request->input('impreso'));
         }
 
+        // Filtro por Contrato
+        if ($contratoId = $request->input('contrato_id')) {
+            $query->where('contrato_id', $contratoId);
+        }
+
         $mantenimientos = $query->paginate(24)->withQueryString();
 
         return Inertia::render('Mantenimientos/Index', [
             'mantenimientos' => $mantenimientos,
-            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'fecha_inicio', 'fecha_fin']),
+            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'fecha_inicio', 'fecha_fin', 'contrato_id']),
         ]);
     }
 
@@ -543,6 +548,11 @@ class MantenimientoController extends Controller
         // Filtro por Estado de Impresión
         if ($request->has('impreso') && $request->input('impreso') !== null && $request->input('impreso') !== '') {
             $query->where('impreso', $request->input('impreso'));
+        }
+
+        // Filtro por Contrato
+        if ($contratoId = $request->input('contrato_id')) {
+            $query->where('contrato_id', $contratoId);
         }
 
         $mantenimientos = $query->get();
