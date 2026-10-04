@@ -213,7 +213,7 @@
                 <td colspan="3"><span class="header-label">Nombre Completo de Usuario:</span> {{ $mtto->equipo->usuario_asignado ?? '' }}</td>
                 <td colspan="4"><span class="header-label">Técnico:</span> {{ $mtto->tecnico->name ?? $mtto->tecnico->nombre ?? 'DANIEL RODRIGUEZ' }}</td>
             </tr>
-            <tr>
+            <tr style="height: 22px;">
                 <td colspan="3"><span class="header-label">Post-Mantenimiento</span></td>
                 <td colspan="4"><span class="header-label">Pre-Mantenimiento</span></td>
             </tr>

@@ -15,7 +15,7 @@ const marcarImpreso = () => {
 const esDatoValido = (valor) => {
     if (!valor) return false;
     const v = String(valor).toUpperCase().trim();
-    return !['N/A', 'S/N', 'SIN SERIE', 'NO APLICA', ''].includes(v);
+    return !['N/A', 'S/N', 'SIN SERIE', 'NO APLICA', '', 'POR DEFINIR'].includes(v);
 };
 </script>
 

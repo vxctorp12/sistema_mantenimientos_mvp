@@ -83,7 +83,7 @@ const exportarPdfMasivoUrl = computed(() => {
 const mostrarDato = (valor) => {
     if (!valor) return '';
     const v = String(valor).toUpperCase().trim();
-    if (['N/A', 'S/N', 'SIN SERIE', 'NO APLICA'].includes(v)) return '';
+    if (['N/A', 'S/N', 'SIN SERIE', 'NO APLICA', 'POR DEFINIR'].includes(v)) return '';
     return valor;
 };
 
