@@ -484,7 +484,7 @@ class MantenimientoController extends Controller
             $mantenimiento->checklists()->delete();
             // $mantenimiento->repuestos()->delete(); // Si existiera una tabla de repuestos
 
-            // Eliminar el mantenimiento
+            // Eliminar el mantenimiento registrado
             $mantenimiento->delete();
 
             // Si hay un equipo asociado, verificar si se quedó huerfano (sin otros mantenimientos)
