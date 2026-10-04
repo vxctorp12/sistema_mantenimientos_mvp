@@ -488,7 +488,7 @@ const submit = () => {
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-gray-100 dark:border-zinc-800">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-gray-100 dark:border-zinc-800">
             <div>
               <label class="block text-xs font-bold text-gray-800 dark:text-zinc-200 mb-1">
                 Estado Final del Equipo *
@@ -510,6 +510,15 @@ const submit = () => {
                 <option value="PENDIENTE">⏳ PENDIENTE (Borrador)</option>
                 <option value="FIRMADO_FISICO">✅ FIRMADO_FISICO (Conforme)</option>
               </select>
+            </div>
+
+            <div class="flex items-center">
+              <label class="flex items-center gap-2 cursor-pointer mt-5">
+                <input type="checkbox" v-model="form.impreso" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:focus:ring-blue-600 transition" />
+                <span class="text-xs font-bold text-gray-800 dark:text-zinc-200">
+                  Marcar como Impreso
+                </span>
+              </label>
             </div>
           </div>
         </div>
