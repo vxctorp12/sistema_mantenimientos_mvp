@@ -86,7 +86,7 @@ class MantenimientoController extends Controller
 
         $tecnicos = [];
         if (!$user || $user->rol !== 'TECNICO') {
-            $tecnicos = User::whereIn('rol', ['TECNICO', 'ADMIN'])->get(['id', 'name']);
+            $tecnicos = User::where('rol', 'TECNICO')->get(['id', 'name']);
         }
 
         return Inertia::render('Mantenimientos/Index', [
