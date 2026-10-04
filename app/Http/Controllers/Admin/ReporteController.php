@@ -29,33 +29,23 @@ class ReporteController extends Controller
 
             // Encabezados
             fputcsv($handle, [
-                'ID Mtto',
                 'Fecha Mtto',
                 'Código Inventario',
                 'Tipo Equipo',
-                'Marca',
-                'Modelo',
-                'Número de Serie',
                 'Usuario Responsable',
                 'Departamento/Unidad',
                 'Técnico Encargado',
-                'Impreso/Firmado',
                 'Observaciones'
             ], ';');
 
             foreach ($mantenimientos as $m) {
                 fputcsv($handle, [
-                    $m->id,
                     $m->fecha_mantenimiento,
                     $m->equipo->codigo_inventario ?? 'N/A',
                     $m->equipo->tipo_equipo ?? 'OTRO',
-                    $m->equipo->marca ?? 'N/A',
-                    $m->equipo->modelo ?? 'N/A',
-                    $m->equipo->numero_serie ?? 'N/A',
                     $m->equipo->usuario_asignado ?? 'N/A',
                     $m->equipo->departamento_unidad ?? 'N/A',
                     $m->tecnico->name ?? 'N/A',
-                    $m->impreso ? 'SI' : 'NO',
                     $m->observaciones
                 ], ';');
             }
