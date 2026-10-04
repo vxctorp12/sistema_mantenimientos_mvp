@@ -95,6 +95,21 @@ const eliminarMantenimiento = (id) => {
     }
 };
 
+const toggleImpreso = (item) => {
+    // Optimistic toggle in UI
+    const originalValue = item.impreso;
+    item.impreso = !item.impreso;
+
+    router.put(route('mantenimientos.toggle-impreso', item.id), { impreso: item.impreso }, {
+        preserveScroll: true,
+        preserveState: true,
+        onError: () => {
+            // Revert on error
+            item.impreso = originalValue;
+        }
+    });
+};
+
 watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, fechaFin, contratoId, tecnicoId], () => {
     aplicarFiltros();
 });
@@ -260,12 +275,10 @@ watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, f
                                 {{ item.tecnico?.name || item.tecnico?.nombre || 'Técnico' }}
                             </td>
                             <td class="p-4 text-center">
-                                <span v-if="item.impreso" class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
-                                    ✓ Impreso
-                                </span>
-                                <span v-else class="px-3 py-1 text-xs font-bold rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">
-                                    ⏳ Pendiente
-                                </span>
+                                <label class="inline-flex items-center cursor-pointer" :title="item.impreso ? 'Desmarcar impreso' : 'Marcar impreso'">
+                                    <input type="checkbox" :checked="item.impreso" @change.prevent="toggleImpreso(item)" 
+                                           class="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 bg-gray-50 dark:bg-zinc-800 dark:border-zinc-600 dark:checked:bg-emerald-500 transition-colors cursor-pointer" />
+                                </label>
                             </td>
                             <td class="p-4 text-right flex items-center justify-end gap-3">
                                 <a :href="route('mantenimientos.pdf', item.id)" target="_blank"

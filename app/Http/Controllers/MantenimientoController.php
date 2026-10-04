@@ -465,6 +465,25 @@ class MantenimientoController extends Controller
 
         return back()->with('success', 'El reporte ha sido marcado como impreso.');
     }
+
+    /**
+     * Alternar manualmente el estado de impresión desde el listado.
+     */
+    public function toggleImpreso(Request $request, Mantenimiento $mantenimiento)
+    {
+        $user = Auth::user();
+
+        // Si es TECNICO, asegurar que es dueño del mantenimiento (opcional, aunque index ya filtra)
+        if ($user && $user->rol === 'TECNICO' && $mantenimiento->tecnico_id !== $user->id) {
+            return back()->with('error', 'No tienes permiso para modificar este registro.');
+        }
+
+        $mantenimiento->update([
+            'impreso' => $request->boolean('impreso')
+        ]);
+
+        return back()->with('success', 'Estado de impresión actualizado.');
+    }
     /**
      * Eliminar el reporte de mantenimiento y su equipo si no tiene otros mantenimientos asociados.
      */

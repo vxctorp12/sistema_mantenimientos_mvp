@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mantenimientos/{mantenimiento}/pdf', [MantenimientoController::class, 'descargarPdf'])->name('mantenimientos.pdf');
     Route::get('/mantenimientos-exportar-pdf-masivo', [MantenimientoController::class, 'exportarPdfMasivo'])->name('mantenimientos.exportar-pdf-masivo');
     Route::post('/mantenimientos/{mantenimiento}/marcar-impreso', [MantenimientoController::class, 'marcarImpreso'])->name('mantenimientos.marcar-impreso');
+    Route::put('/mantenimientos/{mantenimiento}/toggle-impreso', [MantenimientoController::class, 'toggleImpreso'])->name('mantenimientos.toggle-impreso');
 
     // Búsqueda por Serie / Inventario para Autocompletado en caliente
     Route::get('/api/equipos/buscar/{serie}', [EquipoController::class, 'buscarPorSerie'])->name('equipos.buscar');
