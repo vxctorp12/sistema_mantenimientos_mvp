@@ -10,6 +10,7 @@ const props = defineProps({
   contrato_id_default: [Number, String],
   serieInicial: String,
   inventarioInicial: String,
+  departamentos: Array,
 });
 
 const buscando = ref(false);
@@ -326,7 +327,10 @@ const submitForm = (andPrint = false) => {
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Ubicación / Área / Depto.</label>
-              <input v-model="form.departamento_unidad" type="text" placeholder="Ej. GERENCIA INTERNACIONAL" class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl" />
+              <input v-model="form.departamento_unidad" type="text" list="departamentos-list" placeholder="Ej. GERENCIA INTERNACIONAL" class="w-full text-xs border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl" />
+              <datalist id="departamentos-list">
+                  <option v-for="d in departamentos" :key="d" :value="d"></option>
+              </datalist>
             </div>
 
             <div>

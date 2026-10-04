@@ -5,7 +5,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
   mantenimiento: Object,
-  contratos: Array
+  contratos: Array,
+  departamentos: Array,
 });
 
 // LISTAS PREDEFINIDAS BASADAS AL 100% EN FORMATOS FÍSICOS OFICIALES Y REPORTES PDF
@@ -306,8 +307,11 @@ const submit = () => {
               <label class="block text-xs font-semibold text-gray-700 dark:text-zinc-300 mb-1">
                 Ubicación Específica / Departamento
               </label>
-              <input v-model="form.ubicacion_especifica" type="text" 
+              <input v-model="form.ubicacion_especifica" type="text" list="departamentos-list"
                      class="w-full bg-gray-50 dark:bg-zinc-800/80 border border-gray-300 dark:border-zinc-700 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500" />
+              <datalist id="departamentos-list">
+                  <option v-for="d in departamentos" :key="d" :value="d"></option>
+              </datalist>
             </div>
           </div>
         </div>

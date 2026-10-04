@@ -124,6 +124,13 @@ class MantenimientoController extends Controller
             ? $contratos->firstWhere('id', $contratoId) 
             : $contratos->first();
 
+        $departamentos = Equipo::select('departamento_unidad')
+            ->whereNotNull('departamento_unidad')
+            ->where('departamento_unidad', '!=', '')
+            ->distinct()
+            ->orderBy('departamento_unidad')
+            ->pluck('departamento_unidad');
+
         if ($contratoActivo && $contratoActivo->form_version === 'v2') {
             return Inertia::render('Mantenimientos/CreateV2', [
                 'contratos'           => $contratos,
@@ -131,6 +138,7 @@ class MantenimientoController extends Controller
                 'contrato_id_default' => $contratoActivo?->id,
                 'serieInicial'        => $serie,
                 'inventarioInicial'   => $codigoInventario,
+                'departamentos'       => $departamentos,
             ]);
         }
 
@@ -140,6 +148,7 @@ class MantenimientoController extends Controller
             'contrato_id_default' => $contratoActivo?->id,
             'serieInicial'        => $serie,
             'inventarioInicial'   => $codigoInventario,
+            'departamentos'       => $departamentos,
         ]);
     }
 
@@ -287,16 +296,25 @@ class MantenimientoController extends Controller
             $contratos = Contrato::with('cliente.sedes')->where('estado', 'ACTIVO')->get();
         }
 
+        $departamentos = Equipo::select('departamento_unidad')
+            ->whereNotNull('departamento_unidad')
+            ->where('departamento_unidad', '!=', '')
+            ->distinct()
+            ->orderBy('departamento_unidad')
+            ->pluck('departamento_unidad');
+
         if ($mantenimiento->contrato && $mantenimiento->contrato->form_version === 'v2') {
             return Inertia::render('Mantenimientos/EditV2', [
                 'mantenimiento' => $mantenimiento,
                 'contratos'     => $contratos,
+                'departamentos' => $departamentos,
             ]);
         }
 
         return Inertia::render('Mantenimientos/Edit', [
             'mantenimiento' => $mantenimiento,
             'contratos'     => $contratos,
+            'departamentos' => $departamentos,
         ]);
     }
 
