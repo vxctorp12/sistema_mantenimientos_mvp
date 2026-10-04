@@ -270,7 +270,7 @@
         <tbody>
             <tr>
                 <td style="width: 50%;"><span class="font-bold text-blue">FECHA:</span> {{ $mantenimiento->fecha_mantenimiento ? date('d/m/Y', strtotime($mantenimiento->fecha_mantenimiento)) : date('d/m/Y') }}</td>
-                <td style="width: 50%;"><span class="font-bold text-blue">TÉCNICO ENCARGADO:</span> {{ $mantenimiento->tecnico->name ?? $mantenimiento->tecnico->nombre ?? 'N/A' }}</td>
+                <td style="width: 50%;"><span class="font-bold text-blue">TÉCNICO ENCARGADO:</span> {{ $mantenimiento->tecnico->name ?? $mantenimiento->tecnico->nombre ?? 'Sin técnico registrado' }}</td>
             </tr>
             <tr>
                 <td style="width: 50%;"><span class="font-bold text-blue">NOMBRE DE CLIENTE:</span> {{ $mantenimiento->contrato->cliente->nombre_cliente ?? 'N/A' }}</td>
