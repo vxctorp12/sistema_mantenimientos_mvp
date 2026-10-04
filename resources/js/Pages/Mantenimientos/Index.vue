@@ -6,6 +6,7 @@ import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     mantenimientos: Object,
+    tecnicos: Array,
     filters: Object,
 });
 
@@ -16,18 +17,31 @@ const userRole = computed(() => currentUser.value?.rol || 'TECNICO');
 const search = ref(props.filters?.search || '');
 const tipoEquipo = ref(props.filters?.tipo_equipo || '');
 const impreso = ref(props.filters?.impreso ?? '');
+const tipoFiltroFecha = ref(props.filters?.tipo_filtro_fecha || 'rango');
+const fechaExacta = ref(props.filters?.fecha_exacta || '');
 const fechaInicio = ref(props.filters?.fecha_inicio || '');
 const fechaFin = ref(props.filters?.fecha_fin || '');
 const contratoId = ref(props.filters?.contrato_id || '');
+const tecnicoId = ref(props.filters?.tecnico_id || '');
 
 const aplicarFiltros = () => {
+    let fInicio = fechaInicio.value;
+    let fFin = fechaFin.value;
+    if (tipoFiltroFecha.value === 'simple') {
+        fInicio = fechaExacta.value;
+        fFin = fechaExacta.value;
+    }
+
     router.get(route('mantenimientos.index'), {
         search: search.value,
         tipo_equipo: tipoEquipo.value,
         impreso: impreso.value,
-        fecha_inicio: fechaInicio.value,
-        fecha_fin: fechaFin.value,
+        tipo_filtro_fecha: tipoFiltroFecha.value,
+        fecha_exacta: fechaExacta.value,
+        fecha_inicio: fInicio,
+        fecha_fin: fFin,
         contrato_id: contratoId.value,
+        tecnico_id: tecnicoId.value,
     }, { preserveState: true, replace: true });
 };
 
@@ -35,9 +49,12 @@ const limpiarFiltros = () => {
     search.value = '';
     tipoEquipo.value = '';
     impreso.value = '';
+    tipoFiltroFecha.value = 'rango';
+    fechaExacta.value = '';
     fechaInicio.value = '';
     fechaFin.value = '';
     contratoId.value = '';
+    tecnicoId.value = '';
     aplicarFiltros();
 };
 
@@ -46,9 +63,20 @@ const exportarPdfMasivoUrl = computed(() => {
     if (search.value) params.append('search', search.value);
     if (tipoEquipo.value) params.append('tipo_equipo', tipoEquipo.value);
     if (impreso.value !== '' && impreso.value !== null) params.append('impreso', impreso.value);
-    if (fechaInicio.value) params.append('fecha_inicio', fechaInicio.value);
-    if (fechaFin.value) params.append('fecha_fin', fechaFin.value);
+    if (tipoFiltroFecha.value) params.append('tipo_filtro_fecha', tipoFiltroFecha.value);
+    if (fechaExacta.value) params.append('fecha_exacta', fechaExacta.value);
+    
+    let fInicio = fechaInicio.value;
+    let fFin = fechaFin.value;
+    if (tipoFiltroFecha.value === 'simple') {
+        fInicio = fechaExacta.value;
+        fFin = fechaExacta.value;
+    }
+
+    if (fInicio) params.append('fecha_inicio', fInicio);
+    if (fFin) params.append('fecha_fin', fFin);
     if (contratoId.value) params.append('contrato_id', contratoId.value);
+    if (tecnicoId.value) params.append('tecnico_id', tecnicoId.value);
     return `${route('mantenimientos.exportar-pdf-masivo')}?${params.toString()}`;
 });
 
@@ -67,7 +95,7 @@ const eliminarMantenimiento = (id) => {
     }
 };
 
-watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
+watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, fechaFin, contratoId, tecnicoId], () => {
     aplicarFiltros();
 });
 </script>
@@ -94,10 +122,7 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-sm transition flex items-center gap-1.5">
                         <span>🖨️</span> Imprimir PDF Filtrados ({{ mantenimientos?.total || 0 }})
                     </a>
-                    <Link :href="route('equipos.index')" 
-                          class="px-3.5 py-2 bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 text-xs font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-zinc-700 transition">
-                        Ver Inventario
-                    </Link>
+
                     <Link :href="route('mantenimientos.create')" 
                           class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white text-xs rounded-lg font-bold hover:bg-blue-700 dark:hover:bg-blue-600 transition flex items-center gap-1">
                         <span>+</span> Nuevo Mantenimiento
@@ -124,22 +149,52 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
                             <option value="">Todos los tipos</option>
                             <option value="DESKTOP">Desktop</option>
                             <option value="LAPTOP">Laptop</option>
+                            <option value="ESCANER">Escáner</option>
                             <option value="IMPRESORA">Impresora</option>
                         </select>
                     </div>
 
-                    <!-- Fecha Desde -->
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Fecha Desde</label>
-                        <input v-model="fechaInicio" type="date" 
-                               class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                    <!-- Selector de Fechas (Simple o Rango) -->
+                    <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Filtro de Fechas</label>
+                            <select v-model="tipoFiltroFecha" class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500">
+                                <option value="simple">Fecha simple</option>
+                                <option value="rango">Rango de fechas</option>
+                            </select>
+                        </div>
+
+                        <template v-if="tipoFiltroFecha === 'simple'">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Fecha</label>
+                                <input v-model="fechaExacta" type="date" 
+                                       class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                            </div>
+                        </template>
+
+                        <template v-else>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Fecha Desde</label>
+                                <input v-model="fechaInicio" type="date" 
+                                       class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Fecha Hasta</label>
+                                <input v-model="fechaFin" type="date" 
+                                       class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                            </div>
+                        </template>
                     </div>
 
-                    <!-- Fecha Hasta -->
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Fecha Hasta</label>
-                        <input v-model="fechaFin" type="date" 
-                               class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                    <!-- Técnico (Visible si hay técnicos disponibles) -->
+                    <div v-if="tecnicos && tecnicos.length > 0">
+                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Técnico</label>
+                        <select v-model="tecnicoId" class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500">
+                            <option value="">Todos los técnicos</option>
+                            <option v-for="tecnico in tecnicos" :key="tecnico.id" :value="tecnico.id">
+                                {{ tecnico.name }}
+                            </option>
+                        </select>
                     </div>
                 </div>
 
@@ -153,7 +208,7 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
                         </select>
                     </div>
 
-                    <button v-if="search || tipoEquipo || impreso !== '' || fechaInicio || fechaFin" 
+                    <button v-if="search || tipoEquipo || impreso !== '' || fechaExacta || fechaInicio || fechaFin || tecnicoId" 
                             @click="limpiarFiltros" 
                             type="button" 
                             class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold">
@@ -163,20 +218,21 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
             </div>
 
             <!-- Tabla -->
-            <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-zinc-800">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-100 dark:bg-zinc-800/60 text-gray-600 dark:text-zinc-300 text-xs font-semibold uppercase tracking-wider">
-                        <tr>
-                            <th class="p-4">Fecha</th>
-                            <th class="p-4">Serie / Inv.</th>
-                            <th class="p-4">Equipo</th>
-                            <th class="p-4">Usuario / Unidad</th>
-                            <th class="p-4">Técnico</th>
-                            <th class="p-4 text-center">Impresión</th>
-                            <th class="p-4 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-zinc-800 text-sm text-gray-700 dark:text-zinc-300">
+            <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-max">
+                        <thead class="bg-gray-100 dark:bg-zinc-800/60 text-gray-600 dark:text-zinc-300 text-xs font-semibold uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4">Fecha</th>
+                                <th class="p-4">Serie / Inv.</th>
+                                <th class="p-4">Equipo</th>
+                                <th class="p-4 hidden md:table-cell">Usuario / Unidad</th>
+                                <th class="p-4 hidden sm:table-cell">Técnico</th>
+                                <th class="p-4 text-center">Impresión</th>
+                                <th class="p-4 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-zinc-800 text-sm text-gray-700 dark:text-zinc-300">
                         <tr v-for="item in mantenimientos.data" :key="item.id" class="hover:bg-gray-50/50 dark:hover:bg-zinc-800/40">
                             <td class="p-4 text-xs font-medium text-gray-500 dark:text-zinc-400">
                                 {{ item.fecha_mantenimiento ? String(item.fecha_mantenimiento).substring(0, 10).split('-').reverse().join('/') : 'N/A' }}
@@ -196,11 +252,11 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
                                     {{ mostrarDato(item.equipo?.modelo) }}
                                 </template>
                             </td>
-                            <td class="p-4">
+                            <td class="p-4 hidden md:table-cell">
                                 <div class="font-medium text-gray-900 dark:text-white">{{ mostrarDato(item.equipo?.usuario_asignado) }}</div>
                                 <div class="text-xs text-gray-400 dark:text-zinc-500">{{ mostrarDato(item.equipo?.departamento_unidad) }}</div>
                             </td>
-                            <td class="p-4 text-xs font-medium text-gray-600 dark:text-zinc-300">
+                            <td class="p-4 text-xs font-medium text-gray-600 dark:text-zinc-300 hidden sm:table-cell">
                                 {{ item.tecnico?.name || item.tecnico?.nombre || 'Técnico' }}
                             </td>
                             <td class="p-4 text-center">
@@ -237,6 +293,7 @@ watch([search, tipoEquipo, impreso, fechaInicio, fechaFin, contratoId], () => {
                         </tr>
                     </tbody>
                 </table>
+                </div>
 
                 <!-- Paginación -->
                 <Pagination :links="mantenimientos?.links" :from="mantenimientos?.from" :to="mantenimientos?.to" :total="mantenimientos?.total" />

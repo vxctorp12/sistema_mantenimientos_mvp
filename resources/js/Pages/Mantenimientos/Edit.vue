@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useForm, Head, Link } from '@inertiajs/vue3';
+import { useForm, Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
@@ -185,6 +185,12 @@ const cambiarTipoEquipo = () => {
 onMounted(() => {
   cargarChecklistsSegunTipo(form.tipo_equipo);
 });
+
+const eliminarMantenimiento = () => {
+  if (confirm('¿Estás seguro de que deseas eliminar este mantenimiento de forma permanente?')) {
+    router.delete(route('mantenimientos.destroy', props.mantenimiento.id));
+  }
+};
 
 const submit = () => {
   form.checklist = [
@@ -509,13 +515,20 @@ const submit = () => {
         </div>
 
         <!-- BOTONES DE ACCIÓN -->
-        <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-zinc-800">
-          <a :href="route('mantenimientos.pdf', mantenimiento.id)" target="_blank" 
-             class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-2">
-            🖨️ Generar / Imprimir PDF Hoja de Servicio
-          </a>
+        <div class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-gray-200 dark:border-zinc-800 gap-4">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <a :href="route('mantenimientos.pdf', mantenimiento.id)" target="_blank" 
+               class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-2">
+              🖨️ Imprimir PDF
+            </a>
 
-          <div class="flex items-center gap-3">
+            <button v-if="$page.props.auth.user.rol === 'ADMIN'" @click.prevent="eliminarMantenimiento" type="button"
+                    class="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-lg transition flex items-center gap-2 shadow-sm">
+              🗑️ Eliminar
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
             <Link :href="route('mantenimientos.index')" 
                   class="px-4 py-2.5 bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 text-xs font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-zinc-700 transition">
               Cancelar

@@ -268,7 +268,7 @@ const mostrarDato = (valor) => {
 
                             <div class="pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
                                 <span class="text-gray-400">Atenciones del contrato</span>
-                                <Link :href="route('mantenimientos.index', contratoActivo?.id ? { contrato_id: contratoActivo.id } : {})" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
+                                <Link :href="route('mantenimientos.index')" :data="contratoActivo?.id ? { contrato_id: contratoActivo.id } : {}" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
                                     Ver historial ➔
                                 </Link>
                             </div>
@@ -303,7 +303,7 @@ const mostrarDato = (valor) => {
                             <Link :href="route('mantenimientos.create')" class="px-4 py-2 bg-white text-blue-700 font-bold rounded-xl text-xs hover:bg-blue-50 shadow-md transition">
                                 + Nueva Atención
                             </Link>
-                            <Link :href="route('mantenimientos.index', contratoActivo?.id ? { contrato_id: contratoActivo.id } : {})" class="px-4 py-2 bg-blue-800/60 text-white font-medium rounded-xl text-xs hover:bg-blue-800 border border-white/20 backdrop-blur-md transition">
+                            <Link :href="route('mantenimientos.index')" :data="contratoActivo?.id ? { contrato_id: contratoActivo.id } : {}" class="px-4 py-2 bg-blue-800/60 text-white font-medium rounded-xl text-xs hover:bg-blue-800 border border-white/20 backdrop-blur-md transition">
                                 Ver Historial
                             </Link>
                         </div>
@@ -416,7 +416,7 @@ const mostrarDato = (valor) => {
             <div v-if="metricas?.ultimos_mantenimientos" class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-gray-800 dark:text-white text-base">Últimas Atenciones Registradas</h3>
-                    <Link :href="route('mantenimientos.index', contratoActivo?.id ? { contrato_id: contratoActivo.id } : {})" class="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline">Ver todo ➔</Link>
+                    <Link :href="route('mantenimientos.index')" :data="contratoActivo?.id ? { contrato_id: contratoActivo.id } : {}" class="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline">Ver todo ➔</Link>
                 </div>
                 
                 <div class="overflow-x-auto">

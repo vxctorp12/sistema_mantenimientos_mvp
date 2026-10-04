@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\User;
 
 class MantenimientoController extends Controller
 {
@@ -35,7 +36,7 @@ class MantenimientoController extends Controller
             });
         }
 
-        // Filtro por Rango de Fechas
+        // Filtro por Fecha (Rango o Día Único gestionado por el frontend)
         if ($fechaInicio = $request->input('fecha_inicio')) {
             $query->whereDate('fecha_mantenimiento', '>=', $fechaInicio);
         }
@@ -76,11 +77,22 @@ class MantenimientoController extends Controller
             $query->where('contrato_id', $contratoId);
         }
 
+        // Filtro por Técnico
+        if ($tecnicoId = $request->input('tecnico_id')) {
+            $query->where('tecnico_id', $tecnicoId);
+        }
+
         $mantenimientos = $query->paginate(24)->withQueryString();
+
+        $tecnicos = [];
+        if (!$user || $user->rol !== 'TECNICO') {
+            $tecnicos = User::whereIn('rol', ['TECNICO', 'ADMIN'])->get(['id', 'name']);
+        }
 
         return Inertia::render('Mantenimientos/Index', [
             'mantenimientos' => $mantenimientos,
-            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'fecha_inicio', 'fecha_fin', 'contrato_id']),
+            'tecnicos' => $tecnicos,
+            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'tipo_filtro_fecha', 'fecha_inicio', 'fecha_fin', 'contrato_id', 'tecnico_id']),
         ]);
     }
 
@@ -484,6 +496,12 @@ class MantenimientoController extends Controller
             }
         });
 
+        $referer = request()->headers->get('referer');
+
+        if ($referer && str_contains($referer, '/edit')) {
+            return redirect()->route('mantenimientos.index')->with('success', 'Registro de mantenimiento eliminado correctamente.');
+        }
+
         return back()->with('success', 'Registro de mantenimiento eliminado correctamente.');
     }
 
@@ -514,7 +532,7 @@ class MantenimientoController extends Controller
             });
         }
 
-        // Filtro por Rango de Fechas
+        // Filtro por Fecha (Rango o Día Único gestionado por el frontend)
         if ($fechaInicio = $request->input('fecha_inicio')) {
             $query->whereDate('fecha_mantenimiento', '>=', $fechaInicio);
         }
@@ -553,6 +571,11 @@ class MantenimientoController extends Controller
         // Filtro por Contrato
         if ($contratoId = $request->input('contrato_id')) {
             $query->where('contrato_id', $contratoId);
+        }
+
+        // Filtro por Técnico
+        if ($tecnicoId = $request->input('tecnico_id')) {
+            $query->where('tecnico_id', $tecnicoId);
         }
 
         $mantenimientos = $query->get();
