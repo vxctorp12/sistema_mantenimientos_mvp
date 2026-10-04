@@ -253,10 +253,12 @@ watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, f
                                 {{ item.fecha_mantenimiento ? String(item.fecha_mantenimiento).substring(0, 10).split('-').reverse().join('/') : 'N/A' }}
                             </td>
                             <td class="p-4">
-                                <Link :href="route('mantenimientos.show', item.id)" class="font-bold text-blue-600 dark:text-blue-400 hover:underline">
-                                    {{ mostrarDato(item.equipo?.numero_serie) || 'Sin Serie' }}
+                                <Link :href="route('mantenimientos.show', item.id)" class="font-bold text-blue-600 dark:text-blue-400 hover:underline block">
+                                    {{ mostrarDato(item.equipo?.codigo_inventario) || 'Sin Activo Fijo' }}
                                 </Link>
-                                <div class="text-xs text-gray-400 dark:text-zinc-500">{{ mostrarDato(item.equipo?.codigo_inventario) || 'Sin Inv.' }}</div>
+                                <div v-if="mostrarDato(item.equipo?.numero_serie)" class="text-xs text-gray-400 dark:text-zinc-500">
+                                    {{ mostrarDato(item.equipo?.numero_serie) }}
+                                </div>
                             </td>
                             <td class="p-4">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mr-2">

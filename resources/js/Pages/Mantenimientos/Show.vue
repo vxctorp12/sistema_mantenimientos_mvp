@@ -11,6 +11,12 @@ const formImpresion = useForm({});
 const marcarImpreso = () => {
     formImpresion.post(route('mantenimientos.marcar-impreso', props.mantenimiento.id));
 };
+
+const esDatoValido = (valor) => {
+    if (!valor) return false;
+    const v = String(valor).toUpperCase().trim();
+    return !['N/A', 'S/N', 'SIN SERIE', 'NO APLICA', ''].includes(v);
+};
 </script>
 
 <template>
@@ -47,8 +53,8 @@ const marcarImpreso = () => {
                 <!-- Información del Equipo -->
                 <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-3">Equipo Intervenido</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm items-start">
+                        <div v-if="esDatoValido(mantenimiento.equipo?.numero_serie)">
                             <span class="block text-xs text-gray-400 dark:text-gray-500">Número de Serie</span>
                             <strong class="font-mono text-gray-900 dark:text-white">{{ mantenimiento.equipo?.numero_serie }}</strong>
                         </div>
@@ -57,14 +63,23 @@ const marcarImpreso = () => {
                             <span class="font-medium text-gray-700 dark:text-gray-300">{{ mantenimiento.equipo?.codigo_inventario || 'N/A' }}</span>
                         </div>
                         <div>
-                            <span class="block text-xs text-gray-400 dark:text-gray-500">Tipo / Marca / Modelo</span>
+                            <span class="block text-xs text-gray-400 dark:text-gray-500">Tipo de Equipo</span>
+                            <span class="font-medium text-gray-700 dark:text-gray-300">{{ mantenimiento.equipo?.tipo_equipo || 'N/A' }}</span>
+                        </div>
+                        <div v-if="esDatoValido(mantenimiento.equipo?.marca) || esDatoValido(mantenimiento.equipo?.modelo)">
+                            <span class="block text-xs text-gray-400 dark:text-gray-500">Marca / Modelo</span>
                             <span class="font-medium text-gray-700 dark:text-gray-300">
-                                {{ mantenimiento.equipo?.tipo_equipo }} - {{ mantenimiento.equipo?.marca }} {{ mantenimiento.equipo?.modelo }}
+                                <template v-if="esDatoValido(mantenimiento.equipo?.marca)">{{ mantenimiento.equipo?.marca }}</template>
+                                <template v-if="esDatoValido(mantenimiento.equipo?.modelo)"> {{ mantenimiento.equipo?.modelo }}</template>
                             </span>
                         </div>
                         <div>
                             <span class="block text-xs text-gray-400 dark:text-gray-500">Usuario Responsable</span>
                             <span class="font-medium text-gray-700 dark:text-gray-300">{{ mantenimiento.equipo?.usuario_asignado || 'N/A' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-gray-400 dark:text-gray-500">Unidad / Depto.</span>
+                            <span class="font-medium text-gray-700 dark:text-gray-300">{{ mantenimiento.equipo?.departamento_unidad || 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
