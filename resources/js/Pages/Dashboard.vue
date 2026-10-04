@@ -432,7 +432,7 @@ const mostrarDato = (valor) => {
                         </thead>
                         <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
                             <tr v-for="m in metricas.ultimos_mantenimientos" :key="m.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                                <td class="py-3 text-gray-600 dark:text-gray-400">{{ m.fecha }}</td>
+                                <td class="py-3 text-gray-600 dark:text-gray-400">{{ m.fecha ? String(m.fecha).split(' ')[0] : '' }}</td>
                                 <td class="py-3 font-bold text-gray-800 dark:text-white">
                                     {{ mostrarDato(m.serie || m.equipo_serie) }} 
                                     <span v-if="mostrarDato(m.codigo_inventario || m.equipo_inventario)" class="text-gray-400 font-normal">
