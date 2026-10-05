@@ -179,7 +179,7 @@ const submit = () => {
              class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5">
             <span>🖨️ Generar / Imprimir PDF</span>
           </a>
-          <Link :href="route('mantenimientos.index')" 
+          <Link :href="route('mantenimientos.index', { contrato_id: form.contrato_id })" 
                 class="px-3.5 py-2 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 text-xs font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-700 transition">
             ← Volver al Listado
           </Link>

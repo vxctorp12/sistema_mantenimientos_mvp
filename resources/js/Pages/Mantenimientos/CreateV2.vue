@@ -129,7 +129,7 @@ const submitForm = (andPrint = false) => {
             Formato horizontal V2 sin detalles exhaustivos de hardware.
           </p>
         </div>
-        <Link :href="route('mantenimientos.index')" class="text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+        <Link :href="route('mantenimientos.index', { contrato_id: form.contrato_id })" class="text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
           ← Volver al listado
         </Link>
       </div>

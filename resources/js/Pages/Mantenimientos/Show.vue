@@ -34,7 +34,7 @@ const esDatoValido = (valor) => {
                     </p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <Link :href="route('mantenimientos.index')" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <Link :href="route('mantenimientos.index', { contrato_id: mantenimiento.contrato_id })" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                         ← Volver al listado
                     </Link>
                     <button v-if="!mantenimiento.impreso" @click="marcarImpreso" :disabled="formImpresion.processing"
