@@ -14,7 +14,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 10mm 12mm 10mm 12mm;
+            margin: 8mm 10mm 8mm 10mm;
         }
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -69,14 +69,16 @@
                     'mantenimiento' => $mantenimiento, 
                     'tituloDocumento' => $tituloDocumento ?? null,
                     'logoBase64' => $logoBase64 ?? null,
-                    'watermarkBase64' => $watermarkBase64 ?? null
+                    'watermarkBase64' => $watermarkBase64 ?? null,
+                    'isBatch' => true
                 ])
             @else
                 @include('pdf.hoja_servicio_computo', [
                     'mantenimiento' => $mantenimiento, 
                     'tituloDocumento' => $tituloDocumento ?? null,
                     'logoBase64' => $logoBase64 ?? null,
-                    'watermarkBase64' => $watermarkBase64 ?? null
+                    'watermarkBase64' => $watermarkBase64 ?? null,
+                    'isBatch' => true
                 ])
             @endif
         </div>

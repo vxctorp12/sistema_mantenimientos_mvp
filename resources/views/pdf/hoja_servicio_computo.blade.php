@@ -1,3 +1,4 @@
+@if(empty($isBatch))
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -55,6 +56,16 @@
             }, 300);
         });
     </script>
+@else
+    @php
+        if (empty($watermarkBase64)) {
+            $watermarkBase64 = '';
+        }
+        if (empty($logoBase64)) {
+            $logoBase64 = '';
+        }
+    @endphp
+@endif
     <style>
         @page {
             size: A4 portrait;
@@ -222,8 +233,10 @@
             .no-print { display: none !important; }
         }
     </style>
+@if(empty($isBatch))
 </head>
 <body>
+@endif
 
 <div class="container">
 
@@ -480,6 +493,8 @@
     </table>
 
 </div>
+@if(empty($isBatch))
 </body>
 </html>
+@endif
 
