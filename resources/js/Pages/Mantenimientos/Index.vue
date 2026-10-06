@@ -18,7 +18,7 @@ const userRole = computed(() => currentUser.value?.rol || 'TECNICO');
 const search = ref(props.filters?.search || '');
 const tipoEquipo = ref(props.filters?.tipo_equipo || '');
 const impreso = ref(props.filters?.impreso ?? '');
-const tipoFiltroFecha = ref(props.filters?.tipo_filtro_fecha || 'rango');
+const tipoFiltroFecha = ref(props.filters?.tipo_filtro_fecha || 'simple');
 const fechaExacta = ref(props.filters?.fecha_exacta || '');
 const fechaInicio = ref(props.filters?.fecha_inicio || '');
 const fechaFin = ref(props.filters?.fecha_fin || '');
@@ -52,7 +52,7 @@ const limpiarFiltros = () => {
     search.value = '';
     tipoEquipo.value = '';
     impreso.value = '';
-    tipoFiltroFecha.value = 'rango';
+    tipoFiltroFecha.value = 'simple';
     fechaExacta.value = '';
     fechaInicio.value = '';
     fechaFin.value = '';

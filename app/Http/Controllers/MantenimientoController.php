@@ -96,10 +96,17 @@ class MantenimientoController extends Controller
             $tecnicos = User::where('rol', 'TECNICO')->get(['id', 'name']);
         }
 
-        $departamentos = \App\Models\Equipo::select('departamento_unidad')
+        $departamentosQuery = \App\Models\Equipo::select('departamento_unidad')
             ->whereNotNull('departamento_unidad')
-            ->where('departamento_unidad', '!=', '')
-            ->distinct()
+            ->where('departamento_unidad', '!=', '');
+
+        if ($user && $user->rol === 'TECNICO') {
+            $departamentosQuery->whereHas('mantenimientos', function ($q) use ($user) {
+                $q->where('tecnico_id', $user->id);
+            });
+        }
+
+        $departamentos = $departamentosQuery->distinct()
             ->orderBy('departamento_unidad')
             ->pluck('departamento_unidad');
 
