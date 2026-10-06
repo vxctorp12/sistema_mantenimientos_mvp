@@ -229,7 +229,6 @@
         }
         
         @media print {
-            body { margin: 0; }
             .no-print { display: none !important; }
         }
     </style>

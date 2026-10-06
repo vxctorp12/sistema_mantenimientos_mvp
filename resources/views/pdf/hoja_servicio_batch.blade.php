@@ -56,8 +56,9 @@
         
         .signatures-table { width: 100%; border-collapse: collapse; margin-top: 10px; border: 1px solid #6b7280; }
         .signatures-table td { width: 50%; height: 45px; border: 1px solid #6b7280; vertical-align: bottom; text-align: center; padding-bottom: 5px; font-size: 8.5px; color: #374151; }
-        
-        @media print { body { margin: 0; } }
+        @media print { 
+            .page-break { page-break-after: always; }
+        }
     </style>
 </head>
 <body>

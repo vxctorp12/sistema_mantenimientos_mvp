@@ -237,7 +237,6 @@
         }
         
         @media print {
-            body { margin: 0; }
             .page-break { page-break-after: always; }
         }
     </style>
