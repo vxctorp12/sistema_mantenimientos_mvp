@@ -42,6 +42,10 @@ class EquipoController extends Controller
             $query->where('tipo_equipo', $tipo);
         }
 
+        if ($unidad = $request->input('unidad')) {
+            $query->where('departamento_unidad', 'like', "%{$unidad}%");
+        }
+
         $pendientesQuery = Equipo::doesntHave('mantenimientos');
         $totalQuery = Equipo::query();
 
@@ -56,11 +60,19 @@ class EquipoController extends Controller
         $pendientesCount = $pendientesQuery->count();
         $totalCount = $totalQuery->count();
 
+        $departamentos = Equipo::select('departamento_unidad')
+            ->whereNotNull('departamento_unidad')
+            ->where('departamento_unidad', '!=', '')
+            ->distinct()
+            ->orderBy('departamento_unidad')
+            ->pluck('departamento_unidad');
+
         return Inertia::render('Equipos/Index', [
             'equipos' => $query->paginate(24)->withQueryString(),
-            'filters' => $request->only(['search', 'tipo_equipo', 'sin_mantenimiento', 'filtro']),
+            'filters' => $request->only(['search', 'tipo_equipo', 'sin_mantenimiento', 'filtro', 'unidad']),
             'pendientesCount' => $pendientesCount,
             'totalCount' => $totalCount,
+            'departamentos' => $departamentos,
         ]);
     }
 

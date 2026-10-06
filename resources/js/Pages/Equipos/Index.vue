@@ -9,21 +9,24 @@ const props = defineProps({
     filters: Object,
     pendientesCount: Number,
     totalCount: Number,
+    departamentos: Array,
 });
 
 const search = ref(props.filters?.search || '');
 const tipoEquipo = ref(props.filters?.tipo_equipo || '');
 const sinMantenimiento = ref(props.filters?.sin_mantenimiento || '');
+const unidad = ref(props.filters?.unidad || '');
 
 const aplicarFiltros = () => {
     router.get(route('equipos.index'), {
         search: search.value,
         tipo_equipo: tipoEquipo.value,
         sin_mantenimiento: sinMantenimiento.value,
+        unidad: unidad.value,
     }, { preserveState: true, replace: true });
 };
 
-watch([search, tipoEquipo, sinMantenimiento], () => {
+watch([search, tipoEquipo, sinMantenimiento, unidad], () => {
     aplicarFiltros();
 });
 </script>
@@ -56,7 +59,7 @@ watch([search, tipoEquipo, sinMantenimiento], () => {
 
         <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <!-- Filtros -->
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <input v-model="search" type="text" placeholder="Buscar por Serie, Inventario, Marca, Modelo, Usuario..." 
                        class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500" />
                 
@@ -66,6 +69,14 @@ watch([search, tipoEquipo, sinMantenimiento], () => {
                     <option value="LAPTOP">Laptop</option>
                     <option value="IMPRESORA">Impresora</option>
                 </select>
+
+                <div>
+                    <input v-model="unidad" type="text" list="departamentos-list" placeholder="Filtrar por Unidad / Depto..." 
+                           class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-blue-500" />
+                    <datalist id="departamentos-list">
+                        <option v-for="d in departamentos" :key="d" :value="d"></option>
+                    </datalist>
+                </div>
 
                 <select v-model="sinMantenimiento" class="w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm focus:ring-blue-500">
                     <option value="">Todos los estados (Con/Sin Mantenimiento)</option>
