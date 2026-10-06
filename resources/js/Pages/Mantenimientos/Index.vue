@@ -8,6 +8,7 @@ const props = defineProps({
     mantenimientos: Object,
     tecnicos: Array,
     filters: Object,
+    departamentos: Array,
 });
 
 const page = usePage();
@@ -23,6 +24,7 @@ const fechaInicio = ref(props.filters?.fecha_inicio || '');
 const fechaFin = ref(props.filters?.fecha_fin || '');
 const contratoId = ref(props.filters?.contrato_id || '');
 const tecnicoId = ref(props.filters?.tecnico_id || '');
+const unidad = ref(props.filters?.unidad || '');
 
 const aplicarFiltros = () => {
     let fInicio = fechaInicio.value;
@@ -42,6 +44,7 @@ const aplicarFiltros = () => {
         fecha_fin: fFin,
         contrato_id: contratoId.value,
         tecnico_id: tecnicoId.value,
+        unidad: unidad.value,
     }, { preserveState: true, replace: true });
 };
 
@@ -55,6 +58,7 @@ const limpiarFiltros = () => {
     fechaFin.value = '';
     contratoId.value = '';
     tecnicoId.value = '';
+    unidad.value = '';
     aplicarFiltros();
 };
 
@@ -77,6 +81,7 @@ const exportarPdfMasivoUrl = computed(() => {
     if (fFin) params.append('fecha_fin', fFin);
     if (contratoId.value) params.append('contrato_id', contratoId.value);
     if (tecnicoId.value) params.append('tecnico_id', tecnicoId.value);
+    if (unidad.value) params.append('unidad', unidad.value);
     return `${route('mantenimientos.exportar-pdf-masivo')}?${params.toString()}`;
 });
 
@@ -110,7 +115,7 @@ const toggleImpreso = (item) => {
     });
 };
 
-watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, fechaFin, contratoId, tecnicoId], () => {
+watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, fechaFin, contratoId, tecnicoId, unidad], () => {
     aplicarFiltros();
 });
 </script>
@@ -169,6 +174,16 @@ watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, f
                         </select>
                     </div>
 
+                    <!-- Unidad / Depto -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-zinc-400 mb-1">Unidad / Depto</label>
+                        <input v-model="unidad" type="text" list="departamentos-list" placeholder="Todas las unidades..." 
+                               class="w-full border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-lg text-xs py-2 px-3 focus:ring-blue-500" />
+                        <datalist id="departamentos-list">
+                            <option v-for="d in departamentos" :key="d" :value="d"></option>
+                        </datalist>
+                    </div>
+
                     <!-- Selector de Fechas (Simple o Rango) -->
                     <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
@@ -223,7 +238,7 @@ watch([search, tipoEquipo, impreso, tipoFiltroFecha, fechaExacta, fechaInicio, f
                         </select>
                     </div>
 
-                    <button v-if="search || tipoEquipo || impreso !== '' || fechaExacta || fechaInicio || fechaFin || tecnicoId" 
+                    <button v-if="search || tipoEquipo || impreso !== '' || fechaExacta || fechaInicio || fechaFin || tecnicoId || unidad" 
                             @click="limpiarFiltros" 
                             type="button" 
                             class="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold">

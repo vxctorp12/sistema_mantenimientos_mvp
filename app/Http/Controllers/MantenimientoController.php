@@ -82,6 +82,13 @@ class MantenimientoController extends Controller
             $query->where('tecnico_id', $tecnicoId);
         }
 
+        // Filtro por Unidad (departamento_unidad)
+        if ($unidad = $request->input('unidad')) {
+            $query->whereHas('equipo', function ($q) use ($unidad) {
+                $q->where('departamento_unidad', 'like', "%{$unidad}%");
+            });
+        }
+
         $mantenimientos = $query->paginate(24)->withQueryString();
 
         $tecnicos = [];
@@ -89,10 +96,18 @@ class MantenimientoController extends Controller
             $tecnicos = User::where('rol', 'TECNICO')->get(['id', 'name']);
         }
 
+        $departamentos = \App\Models\Equipo::select('departamento_unidad')
+            ->whereNotNull('departamento_unidad')
+            ->where('departamento_unidad', '!=', '')
+            ->distinct()
+            ->orderBy('departamento_unidad')
+            ->pluck('departamento_unidad');
+
         return Inertia::render('Mantenimientos/Index', [
             'mantenimientos' => $mantenimientos,
             'tecnicos' => $tecnicos,
-            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'tipo_filtro_fecha', 'fecha_inicio', 'fecha_fin', 'contrato_id', 'tecnico_id']),
+            'departamentos' => $departamentos,
+            'filters' => $request->only(['search', 'tipo_equipo', 'impreso', 'tipo_filtro_fecha', 'fecha_inicio', 'fecha_fin', 'contrato_id', 'tecnico_id', 'unidad', 'fecha_exacta']),
         ]);
     }
 
